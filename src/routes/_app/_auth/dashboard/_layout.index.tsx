@@ -10,7 +10,7 @@ export const Route = createFileRoute("/_app/_auth/dashboard/_layout/")({
   beforeLoad: () => ({
     title: `${siteConfig.siteTitle} - Dashboard`,
     headerTitle: "Dashboard",
-    headerDescription: "Manage your Apps and view your usage.",
+    headerDescription: "Track your golf progress and manage your coaching.",
   }),
 });
 
@@ -25,7 +25,7 @@ export default function Dashboard() {
             <div className="flex flex-col gap-2">
               <h2 className="text-xl font-medium text-primary">Get Started</h2>
               <p className="text-sm font-normal text-primary/60">
-                Explore the Dashboard and get started with your first app.
+                Explore video lessons and connect with your golf coach.
               </p>
             </div>
           </div>
@@ -54,13 +54,13 @@ export default function Dashboard() {
                 <a
                   target="_blank"
                   rel="noreferrer"
-                  href="https://github.com/get-convex/convex-saas/tree/main/docs"
+                  href="https://ooweb1.com"
                   className={cn(
                     `${buttonVariants({ variant: "ghost", size: "sm" })} gap-2`,
                   )}
                 >
                   <span className="text-sm font-medium text-primary/60 group-hover:text-primary">
-                    Explore Documentation
+                    Learn More
                   </span>
                   <ExternalLink className="h-4 w-4 stroke-[1.5px] text-primary/60 group-hover:text-primary" />
                 </a>

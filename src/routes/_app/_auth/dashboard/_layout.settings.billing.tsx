@@ -84,11 +84,9 @@ export default function BillingSettings() {
   return (
     <div className="flex h-full w-full flex-col gap-6">
       <div className="flex w-full flex-col gap-2 p-6 py-2">
-        <h2 className="text-xl font-medium text-primary">
-          This is a demo app.
-        </h2>
+        <h2 className="text-xl font-medium text-primary">This is a demo.</h2>
         <p className="text-sm font-normal text-primary/60">
-          Convex SaaS is a demo app that uses Stripe test environment. You can
+          OOWeb1 is a demo platform that uses Stripe test environment. You can
           find a list of test card numbers on the{" "}
           <a
             href="https://stripe.com/docs/testing#cards"
