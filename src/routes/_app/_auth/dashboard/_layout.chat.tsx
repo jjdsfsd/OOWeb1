@@ -39,7 +39,7 @@ function ChatPage() {
   const scrollRef = useRef<HTMLDivElement>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const chunksRef = useRef<Blob[]>([]);
-  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const timerRef = useRef<number | undefined>(undefined);
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -72,7 +72,7 @@ function ChatPage() {
       mediaRecorder.start();
       setIsRecording(true);
       setRecordingDuration(0);
-      timerRef.current = setInterval(() => {
+      timerRef.current = window.setInterval(() => {
         setRecordingDuration((prev) => {
           if (prev >= 15) {
             stopRecording();
@@ -91,7 +91,7 @@ function ChatPage() {
     if (mediaRecorderRef.current && isRecording) {
       mediaRecorderRef.current.stop();
       setIsRecording(false);
-      if (timerRef.current) clearInterval(timerRef.current);
+      if (timerRef.current) window.clearInterval(timerRef.current);
     }
   };
 
@@ -104,7 +104,8 @@ function ChatPage() {
         headers: { "Content-Type": blob.type },
         body: blob,
       });
-      const { storageId } = await result.json();
+      const response = (await result.json()) as { storageId: string };
+      const storageId = response.storageId;
       await sendMessage({
         fileId: storageId as Id<"_storage">,
         fileType: "video",
@@ -148,7 +149,7 @@ function ChatPage() {
         {isLoading && (
           <div className="text-center py-10">Loading history...</div>
         )}
-        {(messages as Message[])?.map((msg) => (
+        {(messages as Message[] | undefined)?.map((msg: Message) => (
           <div
             key={msg._id}
             className={cn(
