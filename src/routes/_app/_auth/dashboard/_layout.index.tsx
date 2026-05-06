@@ -40,6 +40,9 @@ export default function Dashboard() {
   const { data: handicaps } = useQuery(
     convexQuery((api as any).handicaps.getHandicaps, {}),
   );
+  const { data: completedCount } = useQuery(
+    convexQuery((api as any).courses.getCompletedLessonsCount, {}),
+  );
   const addHandicap = useConvexMutation((api as any).handicaps.addHandicap);
   const [newHandicap, setNewHandicap] = useState("");
 
@@ -91,7 +94,7 @@ export default function Dashboard() {
             </div>
             <div className="flex flex-col items-center justify-center p-4 rounded-xl bg-primary/10 border border-primary/20 text-center">
               <Video className="w-8 h-8 text-primary mb-2" />
-              <p className="text-2xl font-bold">12</p>
+              <p className="text-2xl font-bold">{completedCount ?? 0}</p>
               <p className="text-xs text-muted-foreground uppercase tracking-wider font-semibold">
                 Lessons Watched
               </p>

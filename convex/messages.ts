@@ -17,6 +17,13 @@ export const list = query({
   },
 });
 
+export const getVideoUrl = query({
+  args: { fileId: v.id("_storage") },
+  handler: async (ctx, args) => {
+    return await ctx.storage.getUrl(args.fileId);
+  },
+});
+
 export const send = mutation({
   args: {
     userId: v.optional(v.id("users")), // If coach sends to a specific user
