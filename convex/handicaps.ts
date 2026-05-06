@@ -24,7 +24,7 @@ export const addHandicap = mutation({
     if (!userId) throw new Error("Not authenticated");
 
     await ctx.db.patch(userId, { handicap: args.value });
-    
+
     return await ctx.db.insert("handicaps", {
       userId,
       value: args.value,

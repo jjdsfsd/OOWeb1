@@ -10,7 +10,7 @@ export default tseslint.config(
     languageOptions: {
       globals: { browser: true, es2020: true },
     },
-    ignores: ["./dist/", ".eslintrc.cjs", "./convex/_generated/server.js"],
+    ignores: ["./dist/", ".eslintrc.cjs", "./convex/_generated/"],
     plugins: {
       "react-refresh": reactRefresh,
     },
