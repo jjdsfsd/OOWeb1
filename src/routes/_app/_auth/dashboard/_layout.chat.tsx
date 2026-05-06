@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { convexQuery, useConvexMutation } from "@convex-dev/react-query";
@@ -27,9 +26,9 @@ type Message = {
 
 function ChatPage() {
   const { data: messages, isLoading } = useQuery(
-    convexQuery((api as any).messages.list, {}),
+    convexQuery(api.messages.list, {}),
   );
-  const sendMessage = useConvexMutation((api as any).messages.send);
+  const sendMessage = useConvexMutation(api.messages.send);
   const generateUploadUrl = useConvexMutation(api.app.generateUploadUrl);
 
   const [text, setText] = useState("");
@@ -40,7 +39,7 @@ function ChatPage() {
   const scrollRef = useRef<HTMLDivElement>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const chunksRef = useRef<Blob[]>([]);
-  const timerRef = useRef<any>(null);
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -235,9 +234,7 @@ function ChatPage() {
 }
 
 function VideoMessage({ fileId }: { fileId: Id<"_storage"> }) {
-  const getUrl = useQuery(
-    convexQuery(api.messages.getVideoUrl as any, { fileId }),
-  );
+  const getUrl = useQuery(convexQuery(api.messages.getVideoUrl, { fileId }));
 
   if (!getUrl.data)
     return (
