@@ -32,6 +32,8 @@ export function Navigation({ user }: { user: User }) {
   const matchRoute = useMatchRoute();
   const navigate = useNavigate();
   const isDashboardPath = matchRoute({ to: DashboardRoute.fullPath });
+  const isLibraryPath = matchRoute({ to: "/dashboard/library" });
+  const isChatPath = matchRoute({ to: "/dashboard/chat" });
   const isSettingsPath = matchRoute({ to: SettingsRoute.fullPath });
   const isBillingPath = matchRoute({ to: BillingSettingsRoute.fullPath });
 
@@ -227,6 +229,36 @@ export function Navigation({ user }: { user: User }) {
             )}
           >
             Dashboard
+          </Link>
+        </div>
+        <div
+          className={cn(
+            `flex h-12 items-center border-b-2`,
+            isLibraryPath ? "border-primary" : "border-transparent",
+          )}
+        >
+          <Link
+            to="/dashboard/library"
+            className={cn(
+              `${buttonVariants({ variant: "ghost", size: "sm" })} text-primary/80`,
+            )}
+          >
+            Library
+          </Link>
+        </div>
+        <div
+          className={cn(
+            `flex h-12 items-center border-b-2`,
+            isChatPath ? "border-primary" : "border-transparent",
+          )}
+        >
+          <Link
+            to="/dashboard/chat"
+            className={cn(
+              `${buttonVariants({ variant: "ghost", size: "sm" })} text-primary/80`,
+            )}
+          >
+            Coach Chat
           </Link>
         </div>
         <div

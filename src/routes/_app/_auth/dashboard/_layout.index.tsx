@@ -1,9 +1,16 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { createFileRoute } from "@tanstack/react-router";
-import { Plus, ExternalLink } from "lucide-react";
-import { useTranslation } from "react-i18next";
-import { cn } from "@/utils/misc.js";
-import { buttonVariants } from "@/ui/button-util";
+import { Plus, TrendingDown, Video, MessageSquare, Trophy } from "lucide-react";
 import siteConfig from "~/site.config";
+import { useQuery } from "@tanstack/react-query";
+import { convexQuery, useConvexMutation } from "@convex-dev/react-query";
+import { api } from "@cvx/_generated/api";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/ui/card";
+import { Button } from "@/ui/button";
+import { Input } from "@/ui/input";
+import { useState } from "react";
+import { Link } from "@tanstack/react-router";
+import { Id } from "@cvx/_generated/dataModel";
 
 export const Route = createFileRoute("/_app/_auth/dashboard/_layout/")({
   component: Dashboard,
@@ -14,62 +21,114 @@ export const Route = createFileRoute("/_app/_auth/dashboard/_layout/")({
   }),
 });
 
+type Handicap = {
+  _id: Id<"handicaps">;
+  _creationTime: number;
+  userId: Id<"users">;
+  value: number;
+  date: number;
+};
+
 export default function Dashboard() {
-  const { t } = useTranslation();
+  const { data: user } = useQuery(convexQuery(api.app.getCurrentUser, {}));
+  const { data: handicaps } = useQuery(convexQuery((api as any).handicaps.getHandicaps, {}));
+  const addHandicap = useConvexMutation((api as any).handicaps.addHandicap);
+  const [newHandicap, setNewHandicap] = useState("");
+
+  const handleAddHandicap = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const val = parseFloat(newHandicap);
+    if (isNaN(val)) return;
+    await addHandicap({ value: val });
+    setNewHandicap("");
+  };
+
+  const improvement = (handicaps as Handicap[]) && (handicaps as Handicap[]).length > 1 
+    ? ((handicaps as Handicap[])[(handicaps as Handicap[]).length - 1].value - (handicaps as Handicap[])[0].value).toFixed(1) 
+    : "0.0";
 
   return (
     <div className="flex h-full w-full bg-secondary px-6 py-8 dark:bg-black">
-      <div className="z-10 mx-auto flex h-full w-full max-w-screen-xl gap-12">
-        <div className="flex w-full flex-col rounded-lg border border-border bg-card dark:bg-black">
-          <div className="flex w-full flex-col rounded-lg p-6">
-            <div className="flex flex-col gap-2">
-              <h2 className="text-xl font-medium text-primary">Get Started</h2>
-              <p className="text-sm font-normal text-primary/60">
-                Explore video lessons and connect with your golf coach.
-              </p>
+      <div className="mx-auto grid h-full w-full max-w-screen-xl gap-6 md:grid-cols-2 lg:grid-cols-3">
+        {/* Welcome & Stats */}
+        <Card className="lg:col-span-2 border-primary/20 bg-card/50 backdrop-blur-sm">
+          <CardHeader>
+            <CardTitle className="text-2xl text-primary">Welcome back, {user?.username}!</CardTitle>
+            <CardDescription>Here's what's happening with your game.</CardDescription>
+          </CardHeader>
+          <CardContent className="grid gap-4 md:grid-cols-3">
+            <div className="flex flex-col items-center justify-center p-4 rounded-xl bg-primary/10 border border-primary/20 text-center">
+              <Trophy className="w-8 h-8 text-primary mb-2" />
+              <p className="text-2xl font-bold">{(user as any)?.handicap ?? "--"}</p>
+              <p className="text-xs text-muted-foreground uppercase tracking-wider font-semibold">Handicap</p>
             </div>
-          </div>
-          <div className="flex w-full px-6">
-            <div className="w-full border-b border-border" />
-          </div>
-          <div className="relative mx-auto flex w-full  flex-col items-center p-6">
-            <div className="relative flex w-full flex-col items-center justify-center gap-6 overflow-hidden rounded-lg border border-border bg-secondary px-6 py-24 dark:bg-card">
-              <div className="z-10 flex max-w-[460px] flex-col items-center gap-4">
-                <div className="flex h-16 w-16 items-center justify-center rounded-2xl border border-primary/20 bg-card hover:border-primary/40">
-                  <Plus className="h-8 w-8 stroke-[1.5px] text-primary/60" />
-                </div>
-                <div className="flex flex-col items-center gap-2">
-                  <p className="text-base font-medium text-primary">
-                    {t("title")}
-                  </p>
-                  <p className="text-center text-base font-normal text-primary/60">
-                    {t("description")}
-                  </p>
-                  <span className="hidden select-none items-center rounded-full bg-green-500/5 px-3 py-1 text-xs font-medium tracking-tight text-green-700 ring-1 ring-inset ring-green-600/20 backdrop-blur-md dark:bg-green-900/40 dark:text-green-100 md:flex">
-                    TIP: Try changing the language!
-                  </span>
-                </div>
-              </div>
-              <div className="z-10 flex items-center justify-center">
-                <a
-                  target="_blank"
-                  rel="noreferrer"
-                  href="https://ooweb1.com"
-                  className={cn(
-                    `${buttonVariants({ variant: "ghost", size: "sm" })} gap-2`,
-                  )}
-                >
-                  <span className="text-sm font-medium text-primary/60 group-hover:text-primary">
-                    Learn More
-                  </span>
-                  <ExternalLink className="h-4 w-4 stroke-[1.5px] text-primary/60 group-hover:text-primary" />
-                </a>
-              </div>
-              <div className="base-grid absolute h-full w-full opacity-40" />
-              <div className="absolute bottom-0 h-full w-full bg-gradient-to-t from-[hsl(var(--card))] to-transparent" />
+            <div className="flex flex-col items-center justify-center p-4 rounded-xl bg-primary/10 border border-primary/20 text-center">
+              <TrendingDown className="w-8 h-8 text-primary mb-2" />
+              <p className="text-2xl font-bold">-{improvement}</p>
+              <p className="text-xs text-muted-foreground uppercase tracking-wider font-semibold">Improvement</p>
             </div>
-          </div>
-        </div>
+            <div className="flex flex-col items-center justify-center p-4 rounded-xl bg-primary/10 border border-primary/20 text-center">
+              <Video className="w-8 h-8 text-primary mb-2" />
+              <p className="text-2xl font-bold">12</p>
+              <p className="text-xs text-muted-foreground uppercase tracking-wider font-semibold">Lessons Watched</p>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Handicap Tracker */}
+        <Card className="border-primary/20 bg-card/50 backdrop-blur-sm">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+               <Plus className="w-5 h-5 text-primary" />
+               Update Handicap
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleAddHandicap} className="flex gap-2 mb-6">
+              <Input
+                type="number"
+                step="0.1"
+                placeholder="New Handicap"
+                value={newHandicap}
+                onChange={(e) => setNewHandicap(e.target.value)}
+                className="bg-background"
+              />
+              <Button type="submit">Update</Button>
+            </form>
+            <div className="space-y-4 max-h-[200px] overflow-y-auto pr-2 custom-scrollbar">
+              {(handicaps as Handicap[])?.map((h) => (
+                <div key={h._id} className="flex justify-between items-center text-sm border-b border-border pb-2 last:border-0">
+                  <span className="text-muted-foreground">{new Date(h.date).toLocaleDateString()}</span>
+                  <span className="font-bold text-primary">{h.value.toFixed(1)}</span>
+                </div>
+              ))}
+              {(!handicaps || (handicaps as Handicap[]).length === 0) && (
+                <p className="text-center text-muted-foreground text-sm py-4">No data yet. Log your first handicap!</p>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Quick Links */}
+        <Card className="border-primary/20 bg-card/50 backdrop-blur-sm">
+           <CardHeader>
+             <CardTitle>My Academy</CardTitle>
+           </CardHeader>
+           <CardContent className="space-y-3">
+              <Button asChild variant="outline" className="w-full justify-start gap-3 border-primary/10 hover:bg-primary/5 hover:text-primary">
+                <Link to="/dashboard/library">
+                  <Video className="w-4 h-4 text-primary" />
+                  Continue Learning
+                </Link>
+              </Button>
+              <Button asChild variant="outline" className="w-full justify-start gap-3 border-primary/10 hover:bg-primary/5 hover:text-primary">
+                <Link to="/dashboard/chat">
+                  <MessageSquare className="w-4 h-4 text-primary" />
+                  Chat with Coach
+                </Link>
+              </Button>
+           </CardContent>
+        </Card>
       </div>
     </div>
   );

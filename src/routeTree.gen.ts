@@ -23,9 +23,12 @@ import { Route as AppAuthDashboardLayoutImport } from './routes/_app/_auth/dashb
 import { Route as AppAuthDashboardLayoutIndexImport } from './routes/_app/_auth/dashboard/_layout.index'
 import { Route as AppAuthOnboardingLayoutUsernameImport } from './routes/_app/_auth/onboarding/_layout.username'
 import { Route as AppAuthDashboardLayoutSettingsImport } from './routes/_app/_auth/dashboard/_layout.settings'
+import { Route as AppAuthDashboardLayoutLibraryImport } from './routes/_app/_auth/dashboard/_layout.library'
 import { Route as AppAuthDashboardLayoutCheckoutImport } from './routes/_app/_auth/dashboard/_layout.checkout'
+import { Route as AppAuthDashboardLayoutChatImport } from './routes/_app/_auth/dashboard/_layout.chat'
 import { Route as AppAuthDashboardLayoutSettingsIndexImport } from './routes/_app/_auth/dashboard/_layout.settings.index'
 import { Route as AppAuthDashboardLayoutSettingsBillingImport } from './routes/_app/_auth/dashboard/_layout.settings.billing'
+import { Route as AppAuthDashboardLayoutLibraryCourseIdImport } from './routes/_app/_auth/dashboard/_layout.library.$courseId'
 
 // Create Virtual Routes
 
@@ -103,11 +106,24 @@ const AppAuthDashboardLayoutSettingsRoute =
     getParentRoute: () => AppAuthDashboardLayoutRoute,
   } as any)
 
+const AppAuthDashboardLayoutLibraryRoute =
+  AppAuthDashboardLayoutLibraryImport.update({
+    path: '/library',
+    getParentRoute: () => AppAuthDashboardLayoutRoute,
+  } as any)
+
 const AppAuthDashboardLayoutCheckoutRoute =
   AppAuthDashboardLayoutCheckoutImport.update({
     path: '/checkout',
     getParentRoute: () => AppAuthDashboardLayoutRoute,
   } as any)
+
+const AppAuthDashboardLayoutChatRoute = AppAuthDashboardLayoutChatImport.update(
+  {
+    path: '/chat',
+    getParentRoute: () => AppAuthDashboardLayoutRoute,
+  } as any,
+)
 
 const AppAuthDashboardLayoutSettingsIndexRoute =
   AppAuthDashboardLayoutSettingsIndexImport.update({
@@ -119,6 +135,12 @@ const AppAuthDashboardLayoutSettingsBillingRoute =
   AppAuthDashboardLayoutSettingsBillingImport.update({
     path: '/billing',
     getParentRoute: () => AppAuthDashboardLayoutSettingsRoute,
+  } as any)
+
+const AppAuthDashboardLayoutLibraryCourseIdRoute =
+  AppAuthDashboardLayoutLibraryCourseIdImport.update({
+    path: '/$courseId',
+    getParentRoute: () => AppAuthDashboardLayoutLibraryRoute,
   } as any)
 
 // Populate the FileRoutesByPath interface
@@ -195,11 +217,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppLoginLayoutIndexImport
       parentRoute: typeof AppLoginLayoutImport
     }
+    '/_app/_auth/dashboard/_layout/chat': {
+      id: '/_app/_auth/dashboard/_layout/chat'
+      path: '/chat'
+      fullPath: '/dashboard/chat'
+      preLoaderRoute: typeof AppAuthDashboardLayoutChatImport
+      parentRoute: typeof AppAuthDashboardLayoutImport
+    }
     '/_app/_auth/dashboard/_layout/checkout': {
       id: '/_app/_auth/dashboard/_layout/checkout'
       path: '/checkout'
       fullPath: '/dashboard/checkout'
       preLoaderRoute: typeof AppAuthDashboardLayoutCheckoutImport
+      parentRoute: typeof AppAuthDashboardLayoutImport
+    }
+    '/_app/_auth/dashboard/_layout/library': {
+      id: '/_app/_auth/dashboard/_layout/library'
+      path: '/library'
+      fullPath: '/dashboard/library'
+      preLoaderRoute: typeof AppAuthDashboardLayoutLibraryImport
       parentRoute: typeof AppAuthDashboardLayoutImport
     }
     '/_app/_auth/dashboard/_layout/settings': {
@@ -222,6 +258,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/dashboard/'
       preLoaderRoute: typeof AppAuthDashboardLayoutIndexImport
       parentRoute: typeof AppAuthDashboardLayoutImport
+    }
+    '/_app/_auth/dashboard/_layout/library/$courseId': {
+      id: '/_app/_auth/dashboard/_layout/library/$courseId'
+      path: '/$courseId'
+      fullPath: '/dashboard/library/$courseId'
+      preLoaderRoute: typeof AppAuthDashboardLayoutLibraryCourseIdImport
+      parentRoute: typeof AppAuthDashboardLayoutLibraryImport
     }
     '/_app/_auth/dashboard/_layout/settings/billing': {
       id: '/_app/_auth/dashboard/_layout/settings/billing'
@@ -248,7 +291,12 @@ export const routeTree = rootRoute.addChildren({
     AppAuthRoute: AppAuthRoute.addChildren({
       AppAuthDashboardRoute: AppAuthDashboardRoute.addChildren({
         AppAuthDashboardLayoutRoute: AppAuthDashboardLayoutRoute.addChildren({
+          AppAuthDashboardLayoutChatRoute,
           AppAuthDashboardLayoutCheckoutRoute,
+          AppAuthDashboardLayoutLibraryRoute:
+            AppAuthDashboardLayoutLibraryRoute.addChildren({
+              AppAuthDashboardLayoutLibraryCourseIdRoute,
+            }),
           AppAuthDashboardLayoutSettingsRoute:
             AppAuthDashboardLayoutSettingsRoute.addChildren({
               AppAuthDashboardLayoutSettingsBillingRoute,
@@ -326,7 +374,9 @@ export const routeTree = rootRoute.addChildren({
       "filePath": "_app/_auth/dashboard/_layout.tsx",
       "parent": "/_app/_auth/dashboard",
       "children": [
+        "/_app/_auth/dashboard/_layout/chat",
         "/_app/_auth/dashboard/_layout/checkout",
+        "/_app/_auth/dashboard/_layout/library",
         "/_app/_auth/dashboard/_layout/settings",
         "/_app/_auth/dashboard/_layout/"
       ]
@@ -349,9 +399,20 @@ export const routeTree = rootRoute.addChildren({
       "filePath": "_app/login/_layout.index.tsx",
       "parent": "/_app/login/_layout"
     },
+    "/_app/_auth/dashboard/_layout/chat": {
+      "filePath": "_app/_auth/dashboard/_layout.chat.tsx",
+      "parent": "/_app/_auth/dashboard/_layout"
+    },
     "/_app/_auth/dashboard/_layout/checkout": {
       "filePath": "_app/_auth/dashboard/_layout.checkout.tsx",
       "parent": "/_app/_auth/dashboard/_layout"
+    },
+    "/_app/_auth/dashboard/_layout/library": {
+      "filePath": "_app/_auth/dashboard/_layout.library.tsx",
+      "parent": "/_app/_auth/dashboard/_layout",
+      "children": [
+        "/_app/_auth/dashboard/_layout/library/$courseId"
+      ]
     },
     "/_app/_auth/dashboard/_layout/settings": {
       "filePath": "_app/_auth/dashboard/_layout.settings.tsx",
@@ -368,6 +429,10 @@ export const routeTree = rootRoute.addChildren({
     "/_app/_auth/dashboard/_layout/": {
       "filePath": "_app/_auth/dashboard/_layout.index.tsx",
       "parent": "/_app/_auth/dashboard/_layout"
+    },
+    "/_app/_auth/dashboard/_layout/library/$courseId": {
+      "filePath": "_app/_auth/dashboard/_layout.library.$courseId.tsx",
+      "parent": "/_app/_auth/dashboard/_layout/library"
     },
     "/_app/_auth/dashboard/_layout/settings/billing": {
       "filePath": "_app/_auth/dashboard/_layout.settings.billing.tsx",
