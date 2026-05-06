@@ -54,6 +54,7 @@ const schema = defineSchema({
     phoneVerificationTime: v.optional(v.number()),
     isAnonymous: v.optional(v.boolean()),
     customerId: v.optional(v.string()),
+    handicap: v.optional(v.number()),
   })
     .index("email", ["email"])
     .index("customerId", ["customerId"]),
@@ -83,6 +84,34 @@ const schema = defineSchema({
   })
     .index("userId", ["userId"])
     .index("stripeId", ["stripeId"]),
+  courses: defineTable({
+    title: v.string(),
+    description: v.string(),
+    thumbnailId: v.optional(v.id("_storage")),
+    price: v.optional(v.number()), // For one-time purchases
+    stripeProductId: v.optional(v.string()),
+    order: v.number(),
+  }),
+  lessons: defineTable({
+    courseId: v.id("courses"),
+    title: v.string(),
+    description: v.string(),
+    videoStorageId: v.id("_storage"),
+    order: v.number(),
+  }).index("courseId", ["courseId"]),
+  messages: defineTable({
+    userId: v.id("users"),
+    text: v.optional(v.string()),
+    fileId: v.optional(v.id("_storage")),
+    fileType: v.optional(v.union(v.literal("image"), v.literal("video"))),
+    sender: v.union(v.literal("user"), v.literal("coach")),
+    createdAt: v.number(),
+  }).index("userId", ["userId"]),
+  handicaps: defineTable({
+    userId: v.id("users"),
+    value: v.number(),
+    date: v.number(),
+  }).index("userId", ["userId"]),
 });
 
 export default schema;
