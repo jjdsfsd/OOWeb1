@@ -197,8 +197,8 @@ export default function DashboardSettings() {
         <div className="flex flex-col gap-2 p-6">
           <h2 className="text-xl font-medium text-primary">Delete Account</h2>
           <p className="text-sm font-normal text-primary/60">
-            Permanently delete your Convex SaaS account, all of your projects,
-            links and their respective stats.
+            Permanently delete your OOWeb1 account and all your golf coaching
+            data.
           </p>
         </div>
         <div className="flex min-h-14 w-full items-center justify-between rounded-lg rounded-t-none border-t border-border bg-red-500/10 px-6 dark:bg-red-500/10">

@@ -16,7 +16,7 @@ const seedProducts = [
   {
     key: PLANS.FREE,
     name: "Free",
-    description: "Start with the basics, upgrade anytime.",
+    description: "Start learning golf basics, upgrade anytime.",
     prices: {
       [INTERVALS.MONTH]: {
         [CURRENCIES.USD]: 0,
@@ -31,15 +31,16 @@ const seedProducts = [
   {
     key: PLANS.PRO,
     name: "Pro",
-    description: "Access to all features and unlimited projects.",
+    description:
+      "Full access to video lessons, coaching chat, and handicap tracking.",
     prices: {
       [INTERVALS.MONTH]: {
-        [CURRENCIES.USD]: 1990,
-        [CURRENCIES.EUR]: 1990,
+        [CURRENCIES.USD]: 2999,
+        [CURRENCIES.EUR]: 2999,
       },
       [INTERVALS.YEAR]: {
-        [CURRENCIES.USD]: 19990,
-        [CURRENCIES.EUR]: 19990,
+        [CURRENCIES.USD]: 29999,
+        [CURRENCIES.EUR]: 29999,
       },
     },
   },
@@ -142,7 +143,7 @@ export default internalAction(async (ctx) => {
   // Configure Customer Portal.
   await stripe.billingPortal.configurations.create({
     business_profile: {
-      headline: "Organization Name - Customer Portal",
+      headline: "OOWeb1 - Customer Portal",
     },
     features: {
       customer_update: {

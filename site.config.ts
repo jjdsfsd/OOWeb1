@@ -2,10 +2,10 @@
  * Centralized site configuration, add whatever you need here.
  */
 export default {
-  siteTitle: "Convex SaaS",
+  siteTitle: "OOWeb1",
   siteDescription:
-    "A Lightweight, Production-Ready Convex Stack for your next SaaS Application.",
-  siteUrl: "https://convex.dev",
+    "Premium Golf Coaching Platform - Transform your game with expert video lessons, personal coaching, and performance tracking.",
+  siteUrl: "https://ooweb1.com",
   siteImage: "/images/og-image.png",
   favicon: "/favicon.ico",
   twitterHandle: "",
