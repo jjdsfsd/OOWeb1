@@ -20,8 +20,10 @@ import {
 import { Button } from "@/ui/button";
 import { buttonVariants } from "@/ui/button-util";
 import { Logo } from "@/ui/logo";
-import { Link, useMatchRoute, useNavigate } from "@tanstack/react-router";
+import { Link, useNavigate, useRouter } from "@tanstack/react-router";
 import { Route as DashboardRoute } from "@/routes/_app/_auth/dashboard/_layout.index";
+import { Route as LibraryRoute } from "@/routes/_app/_auth/dashboard/_layout.library";
+import { Route as ChatRoute } from "@/routes/_app/_auth/dashboard/_layout.chat";
 import { Route as SettingsRoute } from "@/routes/_app/_auth/dashboard/_layout.settings.index";
 import { Route as BillingSettingsRoute } from "@/routes/_app/_auth/dashboard/_layout.settings.billing";
 import { User } from "~/types";
@@ -29,13 +31,18 @@ import { PLANS } from "@cvx/schema";
 
 export function Navigation({ user }: { user: User }) {
   const signOut = useSignOut();
-  const matchRoute = useMatchRoute();
   const navigate = useNavigate();
-  const isDashboardPath = matchRoute({ to: DashboardRoute.fullPath });
-  const isLibraryPath = matchRoute({ to: "/dashboard/library" });
-  const isChatPath = matchRoute({ to: "/dashboard/chat" });
-  const isSettingsPath = matchRoute({ to: SettingsRoute.fullPath });
-  const isBillingPath = matchRoute({ to: BillingSettingsRoute.fullPath });
+  const router = useRouter();
+  const currentPath = router.state.location.pathname;
+
+  const isDashboardPath =
+    currentPath === "/dashboard" || currentPath === "/dashboard/";
+  const isLibraryPath = currentPath.startsWith("/dashboard/library");
+  const isChatPath = currentPath.startsWith("/dashboard/chat");
+  const isSettingsPath =
+    currentPath.startsWith("/dashboard/settings") &&
+    !currentPath.includes("billing");
+  const isBillingPath = currentPath.includes("billing");
 
   if (!user) {
     return null;
@@ -238,7 +245,7 @@ export function Navigation({ user }: { user: User }) {
           )}
         >
           <Link
-            to="/dashboard/library"
+            to={LibraryRoute.fullPath}
             className={cn(
               `${buttonVariants({ variant: "ghost", size: "sm" })} text-primary/80`,
             )}
@@ -253,7 +260,7 @@ export function Navigation({ user }: { user: User }) {
           )}
         >
           <Link
-            to="/dashboard/chat"
+            to={ChatRoute.fullPath}
             className={cn(
               `${buttonVariants({ variant: "ghost", size: "sm" })} text-primary/80`,
             )}

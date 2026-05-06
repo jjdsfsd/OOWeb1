@@ -112,6 +112,15 @@ const schema = defineSchema({
     value: v.number(),
     date: v.number(),
   }).index("userId", ["userId"]),
+  lessonProgress: defineTable({
+    userId: v.id("users"),
+    lessonId: v.id("lessons"),
+    completed: v.boolean(),
+    lastWatched: v.number(),
+  })
+    .index("userId", ["userId"])
+    .index("lessonId", ["lessonId"])
+    .index("userId_lessonId", ["userId", "lessonId"]),
 });
 
 export default schema;
