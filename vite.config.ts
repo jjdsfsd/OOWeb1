@@ -5,6 +5,9 @@ import path from "path";
 
 export default defineConfig({
   plugins: [TanStackRouterVite(), viteReact()],
+  build: {
+    chunkSizeWarningLimit: 1000,
+  },
   resolve: {
     alias: {
       "~": __dirname,
