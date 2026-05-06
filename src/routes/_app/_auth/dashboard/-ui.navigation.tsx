@@ -43,6 +43,7 @@ export function Navigation({ user }: { user: User }) {
     currentPath.startsWith("/dashboard/settings") &&
     !currentPath.includes("billing");
   const isBillingPath = currentPath.includes("billing");
+  const isCoachPath = currentPath.startsWith("/coach");
 
   if (!user) {
     return null;
@@ -298,6 +299,23 @@ export function Navigation({ user }: { user: User }) {
             Billing
           </Link>
         </div>
+        {user.isCoach && (
+          <div
+            className={cn(
+              `flex h-12 items-center border-b-2`,
+              isCoachPath ? "border-primary" : "border-transparent",
+            )}
+          >
+            <Link
+              to="/coach"
+              className={cn(
+                `${buttonVariants({ variant: "ghost", size: "sm" })} text-primary/80 font-bold text-orange-500`,
+              )}
+            >
+              Coach Dashboard
+            </Link>
+          </div>
+        )}
       </div>
     </nav>
   );

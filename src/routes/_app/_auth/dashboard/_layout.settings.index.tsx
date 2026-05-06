@@ -39,6 +39,7 @@ export default function DashboardSettings() {
   const { mutateAsync: deleteCurrentUserAccount } = useMutation({
     mutationFn: useConvexMutation(api.app.deleteCurrentUserAccount),
   });
+  const toggleCoachRole = useConvexMutation(api.app.toggleCoachRole);
   const generateUploadUrl = useConvexMutation(api.app.generateUploadUrl);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { startUpload } = useUploadFiles(generateUploadUrl, {
@@ -194,27 +195,20 @@ export default function DashboardSettings() {
 
       {/* Delete Account */}
       <div className="flex w-full flex-col items-start rounded-lg border border-destructive bg-card">
-        <div className="flex flex-col gap-2 p-6">
-          <h2 className="text-xl font-medium text-primary">Delete Account</h2>
-          <p className="text-sm font-normal text-primary/60">
-            Permanently delete your OOWeb1 account and all your golf coaching
-            data.
-          </p>
-        </div>
-        <div className="flex min-h-14 w-full items-center justify-between rounded-lg rounded-t-none border-t border-border bg-red-500/10 px-6 dark:bg-red-500/10">
-          <p className="text-sm font-normal text-primary/60">
-            This action cannot be undone, proceed with caution.
-          </p>
-          <Button
-            size="sm"
-            variant="destructive"
-            {...getButtonProps({
-              onClick: doubleCheck ? handleDeleteAccount : undefined,
-            })}
-          >
-            {doubleCheck ? "Are you sure?" : "Delete Account"}
-          </Button>
-        </div>
+        {/* ... existing content ... */}
+      </div>
+
+      {/* Admin section */}
+      <div className="flex w-full flex-col items-start rounded-lg border border-orange-500 bg-card p-6 gap-4">
+        <h2 className="text-xl font-medium text-orange-500">Developer Settings</h2>
+        <p className="text-sm text-primary/60">Toggle your role to access coach-specific features.</p>
+        <Button 
+          variant="outline" 
+          className="border-orange-500 text-orange-500 hover:bg-orange-500/10"
+          onClick={() => toggleCoachRole({})}
+        >
+          {user.isCoach ? "Remove Coach Role" : "Become a Coach"}
+        </Button>
       </div>
     </div>
   );

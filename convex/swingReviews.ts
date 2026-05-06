@@ -1,0 +1,67 @@
+import { v } from "convex/values";
+import { query, mutation } from "./_generated/server";
+import { auth } from "./auth";
+
+export const create = mutation({
+  args: {
+    userId: v.id("users"),
+    messageId: v.optional(v.id("messages")),
+    title: v.string(),
+    grip: v.optional(v.string()),
+    posture: v.optional(v.string()),
+    alignment: v.optional(v.string()),
+    swingPath: v.optional(v.string()),
+    summary: v.string(),
+    drillInstructions: v.optional(v.string()),
+    drillVideoId: v.optional(v.id("_storage")),
+  },
+  returns: v.id("swingReviews"),
+  handler: async (ctx, args) => {
+    const coachId = await auth.getUserId(ctx);
+    const coach = await ctx.db.get(coachId!);
+    if (!coach?.isCoach) throw new Error("Not authorized");
+
+    return await ctx.db.insert("swingReviews", {
+      ...args,
+      createdAt: Date.now(),
+    });
+  },
+});
+
+export const list = query({
+  args: { userId: v.optional(v.id("users")) },
+  returns: v.array(
+    v.object({
+      _id: v.id("swingReviews"),
+      _creationTime: v.number(),
+      userId: v.id("users"),
+      messageId: v.optional(v.id("messages")),
+      title: v.string(),
+      grip: v.optional(v.string()),
+      posture: v.optional(v.string()),
+      alignment: v.optional(v.string()),
+      swingPath: v.optional(v.string()),
+      summary: v.string(),
+      drillInstructions: v.optional(v.string()),
+      drillVideoId: v.optional(v.id("_storage")),
+      createdAt: v.number(),
+    }),
+  ),
+  handler: async (ctx, args) => {
+    const userId = await auth.getUserId(ctx);
+    if (!userId) return [];
+    
+    const targetUserId = args.userId || userId;
+    const user = await ctx.db.get(userId);
+    
+    if (!user?.isCoach && targetUserId !== userId) {
+      return [];
+    }
+
+    return await ctx.db
+      .query("swingReviews")
+      .withIndex("userId", (q) => q.eq("userId", targetUserId))
+      .order("desc")
+      .collect();
+  },
+});

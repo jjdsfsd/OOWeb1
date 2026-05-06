@@ -55,6 +55,7 @@ const schema = defineSchema({
     isAnonymous: v.optional(v.boolean()),
     customerId: v.optional(v.string()),
     handicap: v.optional(v.number()),
+    isCoach: v.optional(v.boolean()),
   })
     .index("email", ["email"])
     .index("customerId", ["customerId"]),
@@ -91,7 +92,8 @@ const schema = defineSchema({
     price: v.optional(v.number()), // For one-time purchases
     stripeProductId: v.optional(v.string()),
     order: v.number(),
-  }),
+    category: v.optional(v.union(v.literal("swing"), v.literal("short game"), v.literal("putting"))),
+  }).index("category", ["category"]),
   lessons: defineTable({
     courseId: v.id("courses"),
     title: v.string(),
@@ -121,6 +123,19 @@ const schema = defineSchema({
     .index("userId", ["userId"])
     .index("lessonId", ["lessonId"])
     .index("userId_lessonId", ["userId", "lessonId"]),
+  swingReviews: defineTable({
+    userId: v.id("users"),
+    messageId: v.optional(v.id("messages")),
+    title: v.string(),
+    grip: v.optional(v.string()),
+    posture: v.optional(v.string()),
+    alignment: v.optional(v.string()),
+    swingPath: v.optional(v.string()),
+    summary: v.string(),
+    drillInstructions: v.optional(v.string()),
+    drillVideoId: v.optional(v.id("_storage")),
+    createdAt: v.number(),
+  }).index("userId", ["userId"]),
 });
 
 export default schema;

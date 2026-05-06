@@ -3,8 +3,15 @@ import { query, mutation } from "./_generated/server";
 import { auth } from "./auth";
 
 export const getCourses = query({
-  args: {},
-  handler: async (ctx) => {
+  args: { category: v.optional(v.union(v.literal("swing"), v.literal("short game"), v.literal("putting"))) },
+  handler: async (ctx, args) => {
+    if (args.category) {
+      return await ctx.db
+        .query("courses")
+        .withIndex("category", (q) => q.eq("category", args.category))
+        .order("asc")
+        .collect();
+    }
     return await ctx.db.query("courses").order("asc").collect();
   },
 });
@@ -98,6 +105,7 @@ export const createCourse = mutation({
     thumbnailId: v.optional(v.id("_storage")),
     price: v.optional(v.number()),
     order: v.number(),
+    category: v.optional(v.union(v.literal("swing"), v.literal("short game"), v.literal("putting"))),
   },
   handler: async (ctx, args) => {
     return await ctx.db.insert("courses", args);

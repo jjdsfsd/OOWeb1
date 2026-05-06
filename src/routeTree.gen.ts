@@ -17,7 +17,9 @@ import { Route as AppImport } from './routes/_app'
 import { Route as IndexImport } from './routes/index'
 import { Route as AppAuthImport } from './routes/_app/_auth'
 import { Route as AppLoginLayoutImport } from './routes/_app/login/_layout'
+import { Route as AppAuthCoachImport } from './routes/_app/_auth/coach'
 import { Route as AppLoginLayoutIndexImport } from './routes/_app/login/_layout.index'
+import { Route as AppAuthCoachIndexImport } from './routes/_app/_auth/coach/index'
 import { Route as AppAuthOnboardingLayoutImport } from './routes/_app/_auth/onboarding/_layout'
 import { Route as AppAuthDashboardLayoutImport } from './routes/_app/_auth/dashboard/_layout'
 import { Route as AppAuthDashboardLayoutIndexImport } from './routes/_app/_auth/dashboard/_layout.index'
@@ -73,9 +75,19 @@ const AppLoginLayoutRoute = AppLoginLayoutImport.update({
   getParentRoute: () => AppLoginRoute,
 } as any)
 
+const AppAuthCoachRoute = AppAuthCoachImport.update({
+  path: '/coach',
+  getParentRoute: () => AppAuthRoute,
+} as any)
+
 const AppLoginLayoutIndexRoute = AppLoginLayoutIndexImport.update({
   path: '/',
   getParentRoute: () => AppLoginLayoutRoute,
+} as any)
+
+const AppAuthCoachIndexRoute = AppAuthCoachIndexImport.update({
+  path: '/',
+  getParentRoute: () => AppAuthCoachRoute,
 } as any)
 
 const AppAuthOnboardingLayoutRoute = AppAuthOnboardingLayoutImport.update({
@@ -168,6 +180,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppAuthImport
       parentRoute: typeof AppImport
     }
+    '/_app/_auth/coach': {
+      id: '/_app/_auth/coach'
+      path: '/coach'
+      fullPath: '/coach'
+      preLoaderRoute: typeof AppAuthCoachImport
+      parentRoute: typeof AppAuthImport
+    }
     '/_app/login': {
       id: '/_app/login'
       path: '/login'
@@ -209,6 +228,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/onboarding'
       preLoaderRoute: typeof AppAuthOnboardingLayoutImport
       parentRoute: typeof AppAuthOnboardingRoute
+    }
+    '/_app/_auth/coach/': {
+      id: '/_app/_auth/coach/'
+      path: '/'
+      fullPath: '/coach/'
+      preLoaderRoute: typeof AppAuthCoachIndexImport
+      parentRoute: typeof AppAuthCoachImport
     }
     '/_app/login/_layout/': {
       id: '/_app/login/_layout/'
@@ -289,6 +315,9 @@ export const routeTree = rootRoute.addChildren({
   IndexRoute,
   AppRoute: AppRoute.addChildren({
     AppAuthRoute: AppAuthRoute.addChildren({
+      AppAuthCoachRoute: AppAuthCoachRoute.addChildren({
+        AppAuthCoachIndexRoute,
+      }),
       AppAuthDashboardRoute: AppAuthDashboardRoute.addChildren({
         AppAuthDashboardLayoutRoute: AppAuthDashboardLayoutRoute.addChildren({
           AppAuthDashboardLayoutChatRoute,
@@ -345,8 +374,16 @@ export const routeTree = rootRoute.addChildren({
       "filePath": "_app/_auth.tsx",
       "parent": "/_app",
       "children": [
+        "/_app/_auth/coach",
         "/_app/_auth/dashboard",
         "/_app/_auth/onboarding"
+      ]
+    },
+    "/_app/_auth/coach": {
+      "filePath": "_app/_auth/coach.tsx",
+      "parent": "/_app/_auth",
+      "children": [
+        "/_app/_auth/coach/"
       ]
     },
     "/_app/login": {
@@ -394,6 +431,10 @@ export const routeTree = rootRoute.addChildren({
       "children": [
         "/_app/_auth/onboarding/_layout/username"
       ]
+    },
+    "/_app/_auth/coach/": {
+      "filePath": "_app/_auth/coach/index.tsx",
+      "parent": "/_app/_auth/coach"
     },
     "/_app/login/_layout/": {
       "filePath": "_app/login/_layout.index.tsx",

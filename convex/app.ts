@@ -8,6 +8,7 @@ import { User } from "~/types";
 
 export const getCurrentUser = query({
   args: {},
+  returns: v.any(),
   handler: async (ctx): Promise<User | undefined> => {
     const userId = await auth.getUserId(ctx);
     if (!userId) {
@@ -47,12 +48,14 @@ export const updateUsername = mutation({
   args: {
     username: v.string(),
   },
+  returns: v.null(),
   handler: async (ctx, args) => {
     const userId = await auth.getUserId(ctx);
     if (!userId) {
-      return;
+      return null;
     }
     await ctx.db.patch(userId, { username: args.username });
+    return null;
   },
 });
 
@@ -61,18 +64,19 @@ export const completeOnboarding = mutation({
     username: v.string(),
     currency: currencyValidator,
   },
+  returns: v.null(),
   handler: async (ctx, args) => {
     const userId = await auth.getUserId(ctx);
     if (!userId) {
-      return;
+      return null;
     }
     const user = await ctx.db.get(userId);
     if (!user) {
-      return;
+      return null;
     }
     await ctx.db.patch(userId, { username: args.username });
     if (user.customerId) {
-      return;
+      return null;
     }
     await ctx.scheduler.runAfter(
       0,
@@ -82,11 +86,13 @@ export const completeOnboarding = mutation({
         userId,
       },
     );
+    return null;
   },
 });
 
 export const generateUploadUrl = mutation({
   args: {},
+  returns: v.string(),
   handler: async (ctx) => {
     const userId = await auth.getUserId(ctx);
     if (!userId) {
@@ -100,28 +106,33 @@ export const updateUserImage = mutation({
   args: {
     imageId: v.id("_storage"),
   },
+  returns: v.null(),
   handler: async (ctx, args) => {
     const userId = await auth.getUserId(ctx);
     if (!userId) {
-      return;
+      return null;
     }
     ctx.db.patch(userId, { imageId: args.imageId });
+    return null;
   },
 });
 
 export const removeUserImage = mutation({
   args: {},
+  returns: v.null(),
   handler: async (ctx) => {
     const userId = await auth.getUserId(ctx);
     if (!userId) {
-      return;
+      return null;
     }
     ctx.db.patch(userId, { imageId: undefined, image: undefined });
+    return null;
   },
 });
 
 export const getActivePlans = query({
   args: {},
+  returns: v.any(),
   handler: async (ctx) => {
     const userId = await auth.getUserId(ctx);
     if (!userId) {
@@ -144,10 +155,11 @@ export const getActivePlans = query({
 
 export const deleteCurrentUserAccount = mutation({
   args: {},
+  returns: v.null(),
   handler: async (ctx) => {
     const userId = await auth.getUserId(ctx);
     if (!userId) {
-      return;
+      return null;
     }
     const user = await ctx.db.get(userId);
     if (!user) {
@@ -179,5 +191,19 @@ export const deleteCurrentUserAccount = mutation({
       }
       await ctx.db.delete(authAccount._id);
     });
+    return null;
+  },
+});
+
+export const toggleCoachRole = mutation({
+  args: {},
+  returns: v.null(),
+  handler: async (ctx) => {
+    const userId = await auth.getUserId(ctx);
+    if (!userId) throw new Error("Not authenticated");
+    const user = await ctx.db.get(userId);
+    if (!user) throw new Error("User not found");
+    await ctx.db.patch(userId, { isCoach: !user.isCoach });
+    return null;
   },
 });
