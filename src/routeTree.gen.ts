@@ -22,6 +22,7 @@ import { Route as AppLoginLayoutIndexImport } from './routes/_app/login/_layout.
 import { Route as AppAuthCoachIndexImport } from './routes/_app/_auth/coach/index'
 import { Route as AppAuthOnboardingLayoutImport } from './routes/_app/_auth/onboarding/_layout'
 import { Route as AppAuthDashboardLayoutImport } from './routes/_app/_auth/dashboard/_layout'
+import { Route as AppAuthCoachStudentIdImport } from './routes/_app/_auth/coach/$studentId'
 import { Route as AppAuthDashboardLayoutIndexImport } from './routes/_app/_auth/dashboard/_layout.index'
 import { Route as AppAuthOnboardingLayoutUsernameImport } from './routes/_app/_auth/onboarding/_layout.username'
 import { Route as AppAuthDashboardLayoutSettingsImport } from './routes/_app/_auth/dashboard/_layout.settings'
@@ -98,6 +99,11 @@ const AppAuthOnboardingLayoutRoute = AppAuthOnboardingLayoutImport.update({
 const AppAuthDashboardLayoutRoute = AppAuthDashboardLayoutImport.update({
   id: '/_layout',
   getParentRoute: () => AppAuthDashboardRoute,
+} as any)
+
+const AppAuthCoachStudentIdRoute = AppAuthCoachStudentIdImport.update({
+  path: '/$studentId',
+  getParentRoute: () => AppAuthCoachRoute,
 } as any)
 
 const AppAuthDashboardLayoutIndexRoute =
@@ -200,6 +206,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/login'
       preLoaderRoute: typeof AppLoginLayoutImport
       parentRoute: typeof AppLoginRoute
+    }
+    '/_app/_auth/coach/$studentId': {
+      id: '/_app/_auth/coach/$studentId'
+      path: '/$studentId'
+      fullPath: '/coach/$studentId'
+      preLoaderRoute: typeof AppAuthCoachStudentIdImport
+      parentRoute: typeof AppAuthCoachImport
     }
     '/_app/_auth/dashboard': {
       id: '/_app/_auth/dashboard'
@@ -316,6 +329,7 @@ export const routeTree = rootRoute.addChildren({
   AppRoute: AppRoute.addChildren({
     AppAuthRoute: AppAuthRoute.addChildren({
       AppAuthCoachRoute: AppAuthCoachRoute.addChildren({
+        AppAuthCoachStudentIdRoute,
         AppAuthCoachIndexRoute,
       }),
       AppAuthDashboardRoute: AppAuthDashboardRoute.addChildren({
@@ -383,6 +397,7 @@ export const routeTree = rootRoute.addChildren({
       "filePath": "_app/_auth/coach.tsx",
       "parent": "/_app/_auth",
       "children": [
+        "/_app/_auth/coach/$studentId",
         "/_app/_auth/coach/"
       ]
     },
@@ -399,6 +414,10 @@ export const routeTree = rootRoute.addChildren({
       "children": [
         "/_app/login/_layout/"
       ]
+    },
+    "/_app/_auth/coach/$studentId": {
+      "filePath": "_app/_auth/coach/$studentId.tsx",
+      "parent": "/_app/_auth/coach"
     },
     "/_app/_auth/dashboard": {
       "filePath": "_app/_auth/dashboard",
