@@ -1,44 +1,52 @@
-import { QueryClient } from "@tanstack/react-query";
 import {
   createRootRouteWithContext,
   Outlet,
-  useRouter,
+  ScrollRestoration,
 } from "@tanstack/react-router";
-import React, { Suspense } from "react";
-import { Helmet } from "react-helmet-async";
-
-const TanStackRouterDevtools =
-  process.env.NODE_ENV === "production"
-    ? () => null // Render nothing in production
-    : React.lazy(() =>
-        // Lazy load in development
-        import("@tanstack/router-devtools").then((res) => ({
-          default: res.TanStackRouterDevtools,
-          // For Embedded Mode
-          // default: res.TanStackRouterDevtoolsPanel
-        })),
-      );
+import { Meta, Scripts } from "@tanstack/react-start";
+import { QueryClient } from "@tanstack/react-query";
+import React from "react";
+import { Providers } from "../components/Providers";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
 
 export const Route = createRootRouteWithContext<{
   queryClient: QueryClient;
+  isAuthenticated: boolean;
+  isLoading: boolean;
 }>()({
-  component: () => {
-    const router = useRouter();
-    const matchWithTitle = [...router.state.matches]
-      .reverse()
-      .find((d) => d.routeContext?.title);
-    const title = matchWithTitle?.routeContext.title || "OOWeb1";
-
-    return (
-      <>
-        <Outlet />
-        <Helmet>
-          <title>{title}</title>
-        </Helmet>
-        <Suspense>
-          <TanStackRouterDevtools />
-        </Suspense>
-      </>
-    );
-  },
+  head: () => ({
+    meta: [
+      { charSet: "utf-8" },
+      { name: "viewport", content: "width=device-width, initial-scale=1" },
+      { title: "OOWeb1 - Premium Golf Coaching" },
+    ],
+  }),
+  component: RootComponent,
 });
+
+function RootComponent() {
+  return (
+    <RootDocument>
+      <Providers>
+        <ErrorBoundary>
+          <Outlet />
+        </ErrorBoundary>
+      </Providers>
+    </RootDocument>
+  );
+}
+
+function RootDocument({ children }: { children: React.ReactNode }) {
+  return (
+    <html lang="en">
+      <head>
+        <Meta />
+      </head>
+      <body className="antialiased">
+        {children}
+        <ScrollRestoration />
+        <Scripts />
+      </body>
+    </html>
+  );
+}

@@ -7,7 +7,7 @@ import { Button } from "@/ui/button";
 import { Input } from "@/ui/input";
 import { Send, Paperclip, Loader2, ChevronLeft, ClipboardList } from "lucide-react";
 import { cn } from "@/utils/misc";
-import { Id } from "@cvx/_generated/dataModel";
+import type { Id } from "@cvx/_generated/dataModel";
 import { Link } from "@tanstack/react-router";
 import { 
   Dialog, 

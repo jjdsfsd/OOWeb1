@@ -1,6 +1,7 @@
 import { v } from "convex/values";
 import { query, mutation } from "./_generated/server";
 import { auth } from "./auth";
+import { Id } from "./_generated/dataModel";
 
 export const list = query({
   args: { userId: v.optional(v.id("users")) },
@@ -55,7 +56,7 @@ export const listStudents = query({
     if (!user?.isCoach) throw new Error("Not authorized");
 
     const messages = await ctx.db.query("messages").order("desc").collect();
-    const studentMap = new Map<string, number>();
+    const studentMap = new Map<Id<"users">, number>();
     
     for (const msg of messages) {
       if (!studentMap.has(msg.userId)) {
@@ -65,7 +66,7 @@ export const listStudents = query({
 
     const students = [];
     for (const [studentId, lastMessageAt] of studentMap.entries()) {
-      const student = await ctx.db.get(studentId as any);
+      const student = await ctx.db.get(studentId);
       if (student && !student.isCoach) {
         students.push({
           _id: student._id,

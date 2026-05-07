@@ -1,25 +1,25 @@
-import { useConvexAuth } from "@convex-dev/react-query";
-import { createFileRoute, Outlet, useNavigate } from "@tanstack/react-router";
-import { useEffect } from "react";
+import { createFileRoute, redirect, Outlet } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/_app/_auth")({
-  component: AuthLayout,
-});
-
-function AuthLayout() {
-  const { isAuthenticated, isLoading } = useConvexAuth();
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    // Redirect to login page if user is not authenticated.
-    if (!isLoading && !isAuthenticated) {
-      navigate({ to: "/login" });
+  beforeLoad: ({ context }) => {
+    // Check authentication from the router context
+    // This assumes isAuthenticated is provided in the context (usually via the root route or router setup)
+    if (!context.isAuthenticated) {
+      throw redirect({
+        to: "/login",
+        search: { redirect: window.location.pathname },
+      });
     }
-  }, [isLoading, isAuthenticated]);
-
-  if (isLoading && !isAuthenticated) {
-    return null;
-  }
-
-  return <Outlet />;
-}
+  },
+  component: () => <Outlet />,
+  pendingComponent: () => (
+    <div className="flex h-screen items-center justify-center text-lg font-medium">
+      Loading...
+    </div>
+  ),
+  errorComponent: ({ error }) => (
+    <div className="p-8 text-center text-red-500">
+      Error: {error.message}
+    </div>
+  ),
+});

@@ -1,4 +1,4 @@
-import { ConvexReactClient } from "convex/react";
+import { ConvexReactClient, useConvexAuth } from "convex/react";
 import { RouterProvider } from "@tanstack/react-router";
 import { ConvexQueryClient } from "@convex-dev/react-query";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -26,7 +26,13 @@ const queryClient = new QueryClient({
 convexQueryClient.connect(queryClient);
 
 function InnerApp() {
-  return <RouterProvider router={router} context={{ queryClient }} />;
+  const { isAuthenticated, isLoading } = useConvexAuth();
+  return (
+    <RouterProvider
+      router={router}
+      context={{ queryClient, isAuthenticated, isLoading }}
+    />
+  );
 }
 
 const helmetContext = {};

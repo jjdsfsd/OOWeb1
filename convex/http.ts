@@ -1,18 +1,18 @@
 import { httpRouter } from "convex/server";
 import { auth } from "./auth";
-import { ActionCtx, httpAction } from "@cvx/_generated/server";
-import { ERRORS } from "~/errors";
-import { stripe } from "@cvx/stripe";
-import { STRIPE_WEBHOOK_SECRET } from "@cvx/env";
+import { ActionCtx, httpAction } from "./_generated/server";
+import { ERRORS } from "./errors";
+import { stripe } from "./stripe";
+import { STRIPE_WEBHOOK_SECRET } from "./env";
 import { z } from "zod";
-import { internal } from "@cvx/_generated/api";
-import { Currency, Interval, PLANS } from "@cvx/schema";
+import { internal } from "./_generated/api";
+import { Currency, Interval, PLANS } from "./schema";
 import {
   sendSubscriptionErrorEmail,
   sendSubscriptionSuccessEmail,
-} from "@cvx/email/templates/subscriptionEmail";
+} from "./email/templates/subscriptionEmail";
 import Stripe from "stripe";
-import { Doc } from "@cvx/_generated/dataModel";
+import { Doc } from "./_generated/dataModel";
 
 const http = httpRouter();
 
@@ -57,10 +57,10 @@ const handleUpdateSubscription = async (
       planStripeId: subscriptionItem.plan.product as string,
       priceStripeId: subscriptionItem.price.id,
       interval: subscriptionItem.plan.interval as Interval,
-      status: subscription.status,
-      currentPeriodStart: subscription.current_period_start,
-      currentPeriodEnd: subscription.current_period_end,
-      cancelAtPeriodEnd: subscription.cancel_at_period_end,
+      status: (subscription as any).status,
+      currentPeriodStart: (subscription as any).current_period_start,
+      currentPeriodEnd: (subscription as any).current_period_end,
+      cancelAtPeriodEnd: (subscription as any).cancel_at_period_end,
     },
   });
 };

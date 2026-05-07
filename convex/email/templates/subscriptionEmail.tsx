@@ -1,3 +1,4 @@
+"use node";
 /* eslint-disable react-refresh/only-export-components */
 import { render } from "@react-email/render";
 import {
@@ -11,8 +12,8 @@ import {
   Preview,
   Text,
 } from "@react-email/components";
-import { sendEmail } from "@cvx/email";
-import { SITE_URL } from "@cvx/env";
+import { sendEmail } from "../../email";
+import { SITE_URL } from "../../env";
 
 type SubscriptionEmailOptions = {
   email: string;
@@ -105,12 +106,12 @@ export function SubscriptionErrorEmail({ email }: SubscriptionEmailOptions) {
 /**
  * Renders.
  */
-export function renderSubscriptionSuccessEmail(args: SubscriptionEmailOptions) {
-  return render(<SubscriptionSuccessEmail {...args} />);
+export async function renderSubscriptionSuccessEmail(args: SubscriptionEmailOptions) {
+  return await render(<SubscriptionSuccessEmail {...args} />);
 }
 
-export function renderSubscriptionErrorEmail(args: SubscriptionEmailOptions) {
-  return render(<SubscriptionErrorEmail {...args} />);
+export async function renderSubscriptionErrorEmail(args: SubscriptionEmailOptions) {
+  return await render(<SubscriptionErrorEmail {...args} />);
 }
 
 /**
@@ -120,7 +121,7 @@ export async function sendSubscriptionSuccessEmail({
   email,
   subscriptionId,
 }: SubscriptionEmailOptions) {
-  const html = renderSubscriptionSuccessEmail({ email, subscriptionId });
+  const html = await renderSubscriptionSuccessEmail({ email, subscriptionId });
 
   await sendEmail({
     to: email,
@@ -133,7 +134,7 @@ export async function sendSubscriptionErrorEmail({
   email,
   subscriptionId,
 }: SubscriptionEmailOptions) {
-  const html = renderSubscriptionErrorEmail({ email, subscriptionId });
+  const html = await renderSubscriptionErrorEmail({ email, subscriptionId });
 
   await sendEmail({
     to: email,

@@ -4,13 +4,13 @@ import {
   internalAction,
   internalMutation,
   internalQuery,
-} from "@cvx/_generated/server";
+} from "./_generated/server";
 import { v } from "convex/values";
-import { ERRORS } from "~/errors";
-import { auth } from "@cvx/auth";
-import { currencyValidator, intervalValidator, PLANS } from "@cvx/schema";
-import { api, internal } from "@cvx/_generated/api";
-import { SITE_URL, STRIPE_SECRET_KEY } from "@cvx/env";
+import { ERRORS } from "./errors";
+import { auth } from "./auth";
+import { currencyValidator, intervalValidator, PLANS } from "./schema";
+import { api, internal } from "./_generated/api";
+import { SITE_URL, STRIPE_SECRET_KEY } from "./env";
 import { asyncMap } from "convex-helpers";
 
 /**
@@ -23,8 +23,8 @@ if (!STRIPE_SECRET_KEY) {
 }
 */
 
-export const stripe = new Stripe(STRIPE_SECRET_KEY || "", {
-  apiVersion: "2024-06-20",
+export const stripe = new Stripe(STRIPE_SECRET_KEY || "sk_test_unused", {
+  apiVersion: "2024-06-20" as any,
   typescript: true,
 });
 
@@ -258,9 +258,9 @@ export const PREAUTH_createFreeStripeSubscription = internalAction({
       stripeSubscriptionId: stripeSubscription.id,
       status: stripeSubscription.status,
       interval: "year",
-      currentPeriodStart: stripeSubscription.current_period_start,
-      currentPeriodEnd: stripeSubscription.current_period_end,
-      cancelAtPeriodEnd: stripeSubscription.cancel_at_period_end,
+      currentPeriodStart: (stripeSubscription as any).current_period_start,
+      currentPeriodEnd: (stripeSubscription as any).current_period_end,
+      cancelAtPeriodEnd: (stripeSubscription as any).cancel_at_period_end,
     });
 
     await ctx.runMutation(internal.stripe.PREAUTH_updateCustomerId, {

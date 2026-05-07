@@ -16,7 +16,7 @@ import { Button } from "@/ui/button";
 import { Input } from "@/ui/input";
 import { useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { Id } from "@cvx/_generated/dataModel";
+import type { Id } from "@cvx/_generated/dataModel";
 
 export const Route = createFileRoute("/_app/_auth/dashboard/_layout/")({
   component: Dashboard,

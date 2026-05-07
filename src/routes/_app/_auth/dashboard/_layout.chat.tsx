@@ -7,7 +7,7 @@ import { Button } from "@/ui/button";
 import { Input } from "@/ui/input";
 import { Send, Video, Paperclip, StopCircle, Loader2, Trophy, ArrowRight } from "lucide-react";
 import { cn } from "@/utils/misc";
-import { Id } from "@cvx/_generated/dataModel";
+import type { Id } from "@cvx/_generated/dataModel";
 import { Card, CardContent } from "@/ui/card";
 
 export const Route = createFileRoute("/_app/_auth/dashboard/_layout/chat")({
