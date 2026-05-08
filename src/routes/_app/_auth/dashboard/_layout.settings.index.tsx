@@ -9,7 +9,6 @@ import { api } from "~/convex/_generated/api";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useRef } from "react";
 import { useForm } from "@tanstack/react-form";
-import { zodValidator } from "@tanstack/zod-form-adapter";
 import * as validators from "@/utils/validators";
 import { useSignOut } from "@/utils/misc";
 
