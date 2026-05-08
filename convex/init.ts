@@ -3,10 +3,10 @@ import { ERRORS } from "./errors";
 import { internalAction, internalMutation } from "./_generated/server";
 import schema, {
   CURRENCIES,
-  Currency,
-  Interval,
+  type Currency,
+  type Interval,
   INTERVALS,
-  PlanKey,
+  type PlanKey,
   PLANS,
 } from "./schema";
 import { internal } from "./_generated/api";

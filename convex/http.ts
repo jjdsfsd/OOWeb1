@@ -1,18 +1,18 @@
 import { httpRouter } from "convex/server";
 import { auth } from "./auth";
-import { ActionCtx, httpAction } from "./_generated/server";
+import { type ActionCtx, httpAction } from "./_generated/server";
 import { ERRORS } from "./errors";
 import { stripe } from "./stripe";
 import { STRIPE_WEBHOOK_SECRET } from "./env";
 import { z } from "zod";
 import { internal } from "./_generated/api";
-import { Currency, Interval, PLANS } from "./schema";
+import { type Currency, type Interval, PLANS } from "./schema";
 import {
   sendSubscriptionErrorEmail,
   sendSubscriptionSuccessEmail,
 } from "./email/templates/subscriptionEmail";
 import Stripe from "stripe";
-import { Doc } from "./_generated/dataModel";
+import type { Doc } from "./_generated/dataModel";
 
 const http = httpRouter();
 

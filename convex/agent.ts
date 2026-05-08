@@ -1,9 +1,10 @@
 "use node";
 
 import { Agent, createTool } from "@convex-dev/agent";
-import { components } from "./_generated/api";
+import { api, components } from "./_generated/api";
 import { createOpenRouter } from "@openrouter/ai-sdk-provider";
 import { z } from "zod";
+import type { Id } from "./_generated/dataModel";
 
 const openrouter = createOpenRouter({
   apiKey: process.env.OPENROUTER_API_KEY,
@@ -19,14 +20,11 @@ export const aiCaddy = new Agent(components.agent, {
       description: "Get the student's 3 most recent swing reviews and their current handicap.",
       args: z.object({ userId: z.string() }),
       handler: async (ctx, args): Promise<string> => {
-        const user = await ctx.db.get(args.userId as any);
-        const reviews = await ctx.db
-          .query("swingReviews")
-          .withIndex("userId", (q) => q.eq("userId", args.userId as any))
-          .order("desc")
-          .take(3);
+        const { reviews, handicap } = await ctx.runQuery(api.swingReviews.getAgentContext, { 
+          userId: args.userId as Id<"users"> 
+        });
         
-        const reviewData = reviews.map(r => ({
+        const reviewData = reviews.map((r: any) => ({
           title: r.title,
           date: new Date(r.createdAt).toLocaleDateString(),
           summary: r.summary,
@@ -35,9 +33,9 @@ export const aiCaddy = new Agent(components.agent, {
           path: r.swingPath,
           drill: r.drillInstructions
         }));
-
+    
         return JSON.stringify({
-          handicap: user?.handicap ?? "Not set",
+          handicap: handicap ?? "Not set",
           recentReviews: reviewData
         });
       },

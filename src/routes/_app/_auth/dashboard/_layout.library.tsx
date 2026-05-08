@@ -12,7 +12,7 @@ import {
 } from "@/ui/card";
 import { Button } from "@/ui/button";
 import { Link } from "@tanstack/react-router";
-import { PlayCircle, CheckCircle2, Clock } from "lucide-react";
+import { PlayCircle, CheckCircle2 } from "lucide-react";
 
 export const Route = createFileRoute("/_app/_auth/dashboard/_layout/library")({
   component: LibraryPage,

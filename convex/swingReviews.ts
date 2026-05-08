@@ -97,3 +97,24 @@ export const markRead = mutation({
     return null;
   },
 });
+
+export const getAgentContext = query({
+  args: { userId: v.id("users") },
+  returns: v.object({
+    handicap: v.optional(v.number()),
+    reviews: v.array(v.any()),
+  }),
+  handler: async (ctx, args) => {
+    const user = await ctx.db.get(args.userId);
+    const reviews = await ctx.db
+      .query("swingReviews")
+      .withIndex("userId", (q) => q.eq("userId", args.userId))
+      .order("desc")
+      .take(3);
+    
+    return {
+      handicap: user?.handicap,
+      reviews,
+    };
+  },
+});

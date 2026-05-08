@@ -10,10 +10,9 @@ import type { UIMessage } from "@convex-dev/agent";
 import { useState, useRef, useEffect } from "react";
 import { Button } from "@/ui/button";
 import { Input } from "@/ui/input";
-import { Send, Bot, User, Loader2, Sparkles } from "lucide-react";
+import { Bot, User, Loader2, Sparkles, Send } from "lucide-react";
 import { cn } from "@/utils/misc";
-import { useQuery } from "@tanstack/react-query";
-import { convexQuery, useConvexMutation } from "@convex-dev/react-query";
+import { useConvexMutation } from "@convex-dev/react-query";
 
 export const Route = createFileRoute("/_app/_auth/dashboard/_layout/caddy")({
   component: AICaddyPage,
@@ -39,7 +38,7 @@ function AICaddyPage() {
 }
 
 function CaddyChat({ threadId }: { threadId: string }) {
-  const { results, status, loadMore } = useUIMessages(
+  const { results } = useUIMessages(
     api.chat.listMessages,
     { threadId },
     { initialNumItems: 50, stream: true },

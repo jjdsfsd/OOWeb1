@@ -4,7 +4,6 @@ import { auth } from "./auth";
 import { currencyValidator, PLANS } from "./schema";
 import { asyncMap } from "convex-helpers";
 import { v } from "convex/values";
-import type { User } from "./types";
 
 export const getCurrentUser = query({
   args: {},

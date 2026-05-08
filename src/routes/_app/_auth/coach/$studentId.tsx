@@ -5,7 +5,7 @@ import { api } from "@cvx/_generated/api";
 import { useState, useRef, useEffect } from "react";
 import { Button } from "@/ui/button";
 import { Input } from "@/ui/input";
-import { Send, Paperclip, Loader2, Trophy, Video, ChevronDown } from "lucide-react";
+import { Send, Paperclip, Loader2, Trophy, Video } from "lucide-react";
 import { cn } from "@/utils/misc";
 import type { Id } from "@cvx/_generated/dataModel";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/ui/dialog";
