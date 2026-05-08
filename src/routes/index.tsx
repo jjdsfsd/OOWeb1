@@ -6,9 +6,7 @@ import { Loader2, Video, MessageCircle, BarChart3, Users } from "lucide-react";
 import { Button } from "@/ui/button";
 import { ThemeSwitcherHome } from "@/ui/theme-switcher";
 import ShadowPNG from "/images/shadow.png";
-import { useConvexAuth } from "@convex-dev/react-query";
-import { Route as AuthLoginRoute } from "@/routes/_app/login/_layout.index";
-import { Route as DashboardRoute } from "@/routes/_app/_auth/dashboard/_layout.index";
+import { useConvexAuth } from "convex/react";
 
 export const Route = createFileRoute("/")({
   component: Index,
@@ -27,11 +25,7 @@ function Index() {
         </Link>
         <div className="flex items-center gap-4">
           <Link
-            to={
-              isAuthenticated
-                ? DashboardRoute.fullPath
-                : AuthLoginRoute.fullPath
-            }
+            to={isAuthenticated ? "/dashboard" : "/login"}
             className={buttonVariants({ size: "sm" })}
             disabled={isLoading}
           >
@@ -72,7 +66,7 @@ function Index() {
           </p>
           <div className="mt-2 flex w-full items-center justify-center gap-2">
             <Link
-              to={AuthLoginRoute.fullPath}
+              to="/login"
               className={cn(buttonVariants({ size: "sm" }), "hidden sm:flex")}
             >
               Start Your Journey
@@ -147,7 +141,7 @@ function Index() {
               Learn from PGA professionals and certified instructors.
             </p>
             <Link
-              to={AuthLoginRoute.fullPath}
+              to="/login"
               className={buttonVariants({ size: "sm" })}
             >
               Join Today
@@ -161,7 +155,7 @@ function Index() {
               Monitor your handicap and see your improvement over time.
             </p>
             <Link
-              to={AuthLoginRoute.fullPath}
+              to="/login"
               className={cn(buttonVariants({ variant: "outline", size: "sm" }))}
             >
               Get Started Free

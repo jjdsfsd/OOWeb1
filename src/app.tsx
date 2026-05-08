@@ -3,9 +3,10 @@ import { RouterProvider } from "@tanstack/react-router";
 import { ConvexQueryClient } from "@convex-dev/react-query";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { HelmetProvider } from "react-helmet-async";
-import { router } from "@/router";
+import { createRouter } from "@/router";
 import { ConvexAuthProvider } from "@convex-dev/auth/react";
 import "@/i18n";
+import { useMemo } from "react";
 
 // Convex client
 const convexUrl =
@@ -27,6 +28,8 @@ convexQueryClient.connect(queryClient);
 
 function InnerApp() {
   const { isAuthenticated, isLoading } = useConvexAuth();
+  const router = useMemo(() => createRouter(), []);
+
   return (
     <RouterProvider
       router={router}

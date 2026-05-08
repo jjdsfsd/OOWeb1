@@ -21,12 +21,7 @@ import { Button } from "@/ui/button";
 import { buttonVariants } from "@/ui/button-util";
 import { Logo } from "@/ui/logo";
 import { Link, useNavigate, useRouter } from "@tanstack/react-router";
-import { Route as DashboardRoute } from "@/routes/_app/_auth/dashboard/_layout.index";
-import { Route as LibraryRoute } from "@/routes/_app/_auth/dashboard/_layout.library";
-import { Route as ChatRoute } from "@/routes/_app/_auth/dashboard/_layout.chat";
-import { Route as SettingsRoute } from "@/routes/_app/_auth/dashboard/_layout.settings.index";
-import { Route as BillingSettingsRoute } from "@/routes/_app/_auth/dashboard/_layout.settings.billing";
-import { User } from "~/types";
+import type { User } from "@cvx/types";
 import { PLANS } from "@cvx/schema";
 
 export function Navigation({ user }: { user: User }) {
@@ -54,7 +49,7 @@ export function Navigation({ user }: { user: User }) {
       <div className="mx-auto flex w-full max-w-screen-xl items-center justify-between py-3">
         <div className="flex h-10 items-center gap-2">
           <Link
-            to={DashboardRoute.fullPath}
+            to="/dashboard"
             className="flex h-10 items-center gap-1"
           >
             <Logo />
@@ -127,7 +122,7 @@ export function Navigation({ user }: { user: User }) {
                       size="sm"
                       className="w-full"
                       onClick={() =>
-                        navigate({ to: BillingSettingsRoute.fullPath })
+                        navigate({ to: "/dashboard/settings/billing" })
                       }
                     >
                       Upgrade to PRO
@@ -141,7 +136,7 @@ export function Navigation({ user }: { user: User }) {
 
         <div className="flex h-10 items-center gap-3">
           <Link
-            to={DashboardRoute.fullPath}
+            to="/dashboard"
             className={cn(
               `${buttonVariants({ variant: "outline", size: "sm" })} group hidden h-8 gap-2 rounded-full bg-transparent px-2 pr-2.5 md:flex`,
             )}
@@ -177,7 +172,7 @@ export function Navigation({ user }: { user: User }) {
 
               <DropdownMenuItem
                 className="group h-9 w-full cursor-pointer justify-between rounded-md px-2"
-                onClick={() => navigate({ to: SettingsRoute.fullPath })}
+                onClick={() => navigate({ to: "/dashboard/settings" })}
               >
                 <span className="text-sm text-primary/60 group-hover:text-primary group-focus:text-primary">
                   Settings
@@ -231,7 +226,7 @@ export function Navigation({ user }: { user: User }) {
           )}
         >
           <Link
-            to={DashboardRoute.fullPath}
+            to="/dashboard"
             className={cn(
               `${buttonVariants({ variant: "ghost", size: "sm" })} text-primary/80`,
             )}
@@ -246,7 +241,7 @@ export function Navigation({ user }: { user: User }) {
           )}
         >
           <Link
-            to={LibraryRoute.fullPath}
+            to="/dashboard/library"
             className={cn(
               `${buttonVariants({ variant: "ghost", size: "sm" })} text-primary/80`,
             )}
@@ -261,7 +256,7 @@ export function Navigation({ user }: { user: User }) {
           )}
         >
           <Link
-            to={ChatRoute.fullPath}
+            to="/dashboard/chat"
             className={cn(
               `${buttonVariants({ variant: "ghost", size: "sm" })} text-primary/80`,
             )}
@@ -276,7 +271,7 @@ export function Navigation({ user }: { user: User }) {
           )}
         >
           <Link
-            to={SettingsRoute.fullPath}
+            to="/dashboard/settings"
             className={cn(
               `${buttonVariants({ variant: "ghost", size: "sm" })} text-primary/80`,
             )}
@@ -291,7 +286,7 @@ export function Navigation({ user }: { user: User }) {
           )}
         >
           <Link
-            to={BillingSettingsRoute.fullPath}
+            to="/dashboard/settings/billing"
             className={cn(
               `${buttonVariants({ variant: "ghost", size: "sm" })} text-primary/80`,
             )}

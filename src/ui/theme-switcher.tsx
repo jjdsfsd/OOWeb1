@@ -7,7 +7,12 @@ const themes = ["light", "dark", "system"] as const;
 
 const useTheme = () => {
   const [currentTheme, setCurrentTheme] = useState<"light" | "dark" | "system">(
-    localStorage.theme || "system",
+    () => {
+      if (typeof localStorage !== "undefined" && localStorage.theme) {
+        return localStorage.theme as "light" | "dark" | "system";
+      }
+      return "system";
+    },
   );
   const [initialized, setInitialized] = useState(false);
 
@@ -17,14 +22,17 @@ const useTheme = () => {
       setInitialized(true);
       return;
     }
-    if (currentTheme === "system") {
-      localStorage.removeItem("theme");
-    } else {
-      localStorage.theme = currentTheme;
+    if (typeof localStorage !== "undefined") {
+      if (currentTheme === "system") {
+        localStorage.removeItem("theme");
+      } else {
+        localStorage.theme = currentTheme;
+      }
     }
     if (
       currentTheme === "dark" ||
       (currentTheme === "system" &&
+        typeof window !== "undefined" &&
         window.matchMedia("(prefers-color-scheme: dark)").matches)
     ) {
       document.documentElement.classList.add("dark");

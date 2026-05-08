@@ -1,6 +1,6 @@
 import { defineSchema, defineTable } from "convex/server";
 import { authTables } from "@convex-dev/auth/server";
-import { v, Infer } from "convex/values";
+import { v, type Infer } from "convex/values";
 
 export const CURRENCIES = {
   USD: "usd",

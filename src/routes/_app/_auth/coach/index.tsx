@@ -2,9 +2,9 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { convexQuery } from "@convex-dev/react-query";
 import { api } from "@cvx/_generated/api";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/ui/card";
+import { Card, CardHeader, CardTitle, CardDescription } from "@/ui/card";
 import { Button } from "@/ui/button";
-import { User, MessageSquare, Clock } from "lucide-react";
+import { MessageSquare, Clock } from "lucide-react";
 
 export const Route = createFileRoute("/_app/_auth/coach/")({
   component: StudentList,
@@ -29,7 +29,8 @@ function StudentList() {
           {students.map((student) => (
             <Link 
               key={student._id} 
-              to={`/coach/${student._id}`}
+              to="/coach/$studentId"
+              params={{ studentId: student._id }}
               className="block group"
             >
               <Card className="hover:border-primary/50 transition-all group-hover:shadow-md">

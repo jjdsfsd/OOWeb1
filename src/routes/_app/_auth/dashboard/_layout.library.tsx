@@ -55,7 +55,12 @@ function LibraryPage() {
             </CardHeader>
             <CardContent>
               <Button asChild className="w-full">
-                <Link to={`/dashboard/library/${course._id}`}>View Course</Link>
+                <Link
+                  to="/dashboard/library/$courseId"
+                  params={{ courseId: course._id }}
+                >
+                  View Course
+                </Link>
               </Button>
             </CardContent>
           </Card>

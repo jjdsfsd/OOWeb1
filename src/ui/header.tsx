@@ -1,10 +1,8 @@
-import { useRouteContext, useRouter } from "@tanstack/react-router";
+import { useMatches } from "@tanstack/react-router";
 
 export function Header() {
-  const router = useRouter();
-  const routeContext = useRouteContext({
-    from: router.state.matches.slice(-1)[0].id,
-  });
+  const matches = useMatches();
+  const routeContext = matches[matches.length - 1]?.context as any;
 
   return (
     <header className="z-10 flex w-full flex-col border-b border-border bg-card px-6">

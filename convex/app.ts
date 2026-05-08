@@ -9,10 +9,10 @@ import { User } from "./types";
 export const getCurrentUser = query({
   args: {},
   returns: v.any(),
-  handler: async (ctx): Promise<User | undefined> => {
+  handler: async (ctx): Promise<any> => {
     const userId = await auth.getUserId(ctx);
     if (!userId) {
-      return;
+      return null;
     }
     const [user, subscription] = await Promise.all([
       ctx.db.get(userId),
@@ -22,7 +22,7 @@ export const getCurrentUser = query({
         .unique(),
     ]);
     if (!user) {
-      return;
+      return null;
     }
     const plan = subscription?.planId
       ? await ctx.db.get(subscription.planId)

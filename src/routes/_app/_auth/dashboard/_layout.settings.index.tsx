@@ -53,10 +53,8 @@ export default function DashboardSettings() {
       });
     },
   });
-  const { doubleCheck, getButtonProps } = useDoubleCheck();
 
   const usernameForm = useForm({
-    validatorAdapter: zodValidator(),
     defaultValues: {
       username: user?.username,
     },
@@ -64,11 +62,6 @@ export default function DashboardSettings() {
       await updateUsername({ username: value.username || "" });
     },
   });
-
-  const handleDeleteAccount = async () => {
-    await deleteCurrentUserAccount({});
-    signOut();
-  };
 
   if (!user) {
     return null;
@@ -171,13 +164,13 @@ export default function DashboardSettings() {
                 onBlur={field.handleBlur}
                 onChange={(e) => field.handleChange(e.target.value)}
                 className={`w-80 bg-transparent ${
-                  field.state.meta?.errors.length > 0 &&
+                  (field.state.meta?.errors?.length ?? 0) > 0 &&
                   "border-destructive focus-visible:ring-destructive"
                 }`}
               />
             )}
           />
-          {usernameForm.state.fieldMeta.username?.errors.length > 0 && (
+          {(usernameForm.state.fieldMeta.username?.errors?.length ?? 0) > 0 && (
             <p className="text-sm text-destructive dark:text-destructive-foreground">
               {usernameForm.state.fieldMeta.username?.errors.join(" ")}
             </p>
@@ -195,7 +188,28 @@ export default function DashboardSettings() {
 
       {/* Delete Account */}
       <div className="flex w-full flex-col items-start rounded-lg border border-destructive bg-card">
-        {/* ... existing content ... */}
+        <div className="flex w-full flex-col gap-2 p-6">
+          <h2 className="text-xl font-medium text-destructive">
+            Delete Account
+          </h2>
+          <p className="text-sm font-normal text-primary/60">
+            Permanently delete your account and all of your content.
+          </p>
+        </div>
+        <div className="flex min-h-14 w-full items-center justify-end rounded-lg rounded-t-none border-t border-border bg-secondary px-6 dark:bg-card">
+          <Button
+            variant="destructive"
+            size="sm"
+            onClick={async () => {
+              if (confirm("Are you sure you want to delete your account?")) {
+                await deleteCurrentUserAccount({});
+                signOut();
+              }
+            }}
+          >
+            Delete Account
+          </Button>
+        </div>
       </div>
 
       {/* Admin section */}

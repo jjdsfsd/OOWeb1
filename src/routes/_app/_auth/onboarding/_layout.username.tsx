@@ -3,11 +3,9 @@ import { Loader2 } from "lucide-react";
 import { Input } from "@/ui/input";
 import { Button } from "@/ui/button";
 import { useForm } from "@tanstack/react-form";
-import { zodValidator } from "@tanstack/zod-form-adapter";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { convexQuery, useConvexMutation } from "@convex-dev/react-query";
 import { api } from "~/convex/_generated/api";
-import { Route as DashboardRoute } from "@/routes/_app/_auth/dashboard/_layout.index";
 import * as validators from "@/utils/validators";
 import { useEffect, useState } from "react";
 import { getLocaleCurrency } from "@/utils/misc";
@@ -30,7 +28,6 @@ export default function OnboardingUsername() {
   const navigate = useNavigate();
 
   const form = useForm({
-    validatorAdapter: zodValidator(),
     defaultValues: {
       username: "",
     },
@@ -46,7 +43,7 @@ export default function OnboardingUsername() {
 
   useEffect(() => {
     if (user?.username) {
-      navigate({ to: DashboardRoute.fullPath });
+      navigate({ to: "/dashboard" });
     }
   }, [user?.username]);
 
@@ -87,7 +84,7 @@ export default function OnboardingUsername() {
                 onBlur={field.handleBlur}
                 onChange={(e) => field.handleChange(e.target.value)}
                 className={`bg-transparent ${
-                  field.state.meta?.errors.length > 0 &&
+                  (field.state.meta?.errors?.length ?? 0) > 0 &&
                   "border-destructive focus-visible:ring-destructive"
                 }`}
               />
@@ -96,7 +93,7 @@ export default function OnboardingUsername() {
         </div>
 
         <div className="flex flex-col">
-          {form.state.fieldMeta.username?.errors.length > 0 && (
+          {(form.state.fieldMeta.username?.errors?.length ?? 0) > 0 && (
             <span className="mb-2 text-sm text-destructive dark:text-destructive-foreground">
               {form.state.fieldMeta.username?.errors.join(" ")}
             </span>

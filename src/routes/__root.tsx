@@ -2,8 +2,9 @@ import {
   createRootRouteWithContext,
   Outlet,
   ScrollRestoration,
+  HeadContent,
+  Scripts,
 } from "@tanstack/react-router";
-import { Meta, Scripts } from "@tanstack/react-start";
 import { QueryClient } from "@tanstack/react-query";
 import React from "react";
 import { Providers } from "../components/Providers";
@@ -40,7 +41,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
       <head>
-        <Meta />
+        <HeadContent />
       </head>
       <body className="antialiased">
         {children}
