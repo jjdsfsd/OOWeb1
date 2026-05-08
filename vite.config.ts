@@ -20,12 +20,5 @@ export default defineConfig({
   ],
   resolve: {
     preserveSymlinks: true,
-    alias: {
-      "react-dropzone": "/home/engine/project/app/node_modules/react-dropzone/dist/es/index.js",
-      "@xixixao/uploadstuff/esm/UploadButton": "/home/engine/project/app/node_modules/@xixixao/uploadstuff/esm/UploadButton.js",
-      "@xixixao/uploadstuff/esm/UploadDropzone": "/home/engine/project/app/node_modules/@xixixao/uploadstuff/esm/UploadDropzone.js",
-      "@xixixao/uploadstuff/esm/UploadSpinner": "/home/engine/project/app/node_modules/@xixixao/uploadstuff/esm/UploadSpinner.js",
-      "@xixixao/uploadstuff/esm/useUploadFiles": "/home/engine/project/app/node_modules/@xixixao/uploadstuff/esm/useUploadFiles.js",
-    },
   },
 })

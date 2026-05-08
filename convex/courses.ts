@@ -5,14 +5,48 @@ import { auth } from "./auth";
 export const getCourses = query({
   args: { category: v.optional(v.union(v.literal("swing"), v.literal("short game"), v.literal("putting"))) },
   handler: async (ctx, args) => {
+    const userId = await auth.getUserId(ctx);
+    
+    let courses;
     if (args.category) {
-      return await ctx.db
+      courses = await ctx.db
         .query("courses")
         .withIndex("category", (q) => q.eq("category", args.category))
         .order("asc")
         .collect();
+    } else {
+      courses = await ctx.db.query("courses").order("asc").collect();
     }
-    return await ctx.db.query("courses").order("asc").collect();
+
+    if (!userId) return courses.map(c => ({ ...c, completedCount: 0, totalLessons: 0 }));
+
+    return await Promise.all(courses.map(async (course) => {
+      const lessons = await ctx.db
+        .query("lessons")
+        .withIndex("courseId", (q) => q.eq("courseId", course._id))
+        .collect();
+      
+      const totalLessons = lessons.length;
+      let completedCount = 0;
+
+      if (totalLessons > 0) {
+        const progresses = await Promise.all(
+          lessons.map(l => 
+            ctx.db
+              .query("lessonProgress")
+              .withIndex("userId_lessonId", (q) => q.eq("userId", userId).eq("lessonId", l._id))
+              .unique()
+          )
+        );
+        completedCount = progresses.filter(p => p?.completed).length;
+      }
+
+      return {
+        ...course,
+        totalLessons,
+        completedCount
+      };
+    }));
   },
 });
 
@@ -91,13 +125,12 @@ export const getCompletedLessonsCount = query({
     const progress = await ctx.db
       .query("lessonProgress")
       .withIndex("userId", (q) => q.eq("userId", userId))
-      .filter((q) => q.eq(q.field("completed"), true))
       .collect();
-    return progress.length;
+    return progress.filter(p => p.completed).length;
   },
 });
 
-// Admin mutations (could be restricted by auth later)
+// Admin mutations
 export const createCourse = mutation({
   args: {
     title: v.string(),

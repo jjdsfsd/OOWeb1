@@ -1,7 +1,7 @@
 import { v } from "convex/values";
 import { query, mutation } from "./_generated/server";
 import { auth } from "./auth";
-import { Id } from "./_generated/dataModel";
+import type { Id } from "./_generated/dataModel";
 
 export const list = query({
   args: { userId: v.optional(v.id("users")) },
@@ -46,6 +46,7 @@ export const listStudents = query({
       username: v.optional(v.string()),
       email: v.optional(v.string()),
       lastMessageAt: v.number(),
+      unreadCount: v.number(),
     }),
   ),
   handler: async (ctx) => {
@@ -68,17 +69,60 @@ export const listStudents = query({
     for (const [studentId, lastMessageAt] of studentMap.entries()) {
       const student = await ctx.db.get(studentId);
       if (student && !student.isCoach) {
+        // Check read status
+        const readStatus = await ctx.db
+          .query("coachReadStatus")
+          .withIndex("coachId_studentId", (q) => q.eq("coachId", userId).eq("studentId", studentId))
+          .unique();
+        
+        const lastRead = readStatus?.lastReadAt ?? 0;
+        const studentMessages = await ctx.db
+          .query("messages")
+          .withIndex("userId", (q) => q.eq("userId", studentId))
+          .collect();
+        
+        const unreadCount = studentMessages.filter(m => m.sender === "user" && m.createdAt > lastRead).length;
+
         students.push({
           _id: student._id,
           name: student.name,
           username: student.username,
           email: student.email,
           lastMessageAt,
+          unreadCount,
         });
       }
     }
 
     return students.sort((a, b) => b.lastMessageAt - a.lastMessageAt);
+  },
+});
+
+export const markReadByCoach = mutation({
+  args: { studentId: v.id("users") },
+  returns: v.null(),
+  handler: async (ctx, args) => {
+    const userId = await auth.getUserId(ctx);
+    if (!userId) throw new Error("Not authenticated");
+    
+    const user = await ctx.db.get(userId);
+    if (!user?.isCoach) throw new Error("Not authorized");
+
+    const existing = await ctx.db
+      .query("coachReadStatus")
+      .withIndex("coachId_studentId", (q) => q.eq("coachId", userId).eq("studentId", args.studentId))
+      .unique();
+    
+    if (existing) {
+      await ctx.db.patch(existing._id, { lastReadAt: Date.now() });
+    } else {
+      await ctx.db.insert("coachReadStatus", {
+        coachId: userId,
+        studentId: args.studentId,
+        lastReadAt: Date.now(),
+      });
+    }
+    return null;
   },
 });
 

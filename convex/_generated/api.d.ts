@@ -8,9 +8,12 @@
  * @module
  */
 
+import type * as agent from "../agent.js";
 import type * as app from "../app.js";
 import type * as auth from "../auth.js";
+import type * as chat from "../chat.js";
 import type * as courses from "../courses.js";
+import type * as drills from "../drills.js";
 import type * as email_index from "../email/index.js";
 import type * as email_templates_subscriptionEmail from "../email/templates/subscriptionEmail.js";
 import type * as env from "../env.js";
@@ -33,9 +36,12 @@ import type {
 } from "convex/server";
 
 declare const fullApi: ApiFromModules<{
+  agent: typeof agent;
   app: typeof app;
   auth: typeof auth;
+  chat: typeof chat;
   courses: typeof courses;
+  drills: typeof drills;
   "email/index": typeof email_index;
   "email/templates/subscriptionEmail": typeof email_templates_subscriptionEmail;
   env: typeof env;
@@ -78,4 +84,6 @@ export declare const internal: FilterApi<
   FunctionReference<any, "internal">
 >;
 
-export declare const components: {};
+export declare const components: {
+  agent: import("@convex-dev/agent/_generated/component.js").ComponentApi<"agent">;
+};

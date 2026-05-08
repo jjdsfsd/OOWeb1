@@ -56,6 +56,8 @@ const schema = defineSchema({
     customerId: v.optional(v.string()),
     handicap: v.optional(v.number()),
     isCoach: v.optional(v.boolean()),
+    lastReadReviewsAt: v.optional(v.number()),
+    caddyThreadId: v.optional(v.string()),
   })
     .index("email", ["email"])
     .index("customerId", ["customerId"]),
@@ -136,6 +138,17 @@ const schema = defineSchema({
     drillVideoId: v.optional(v.id("_storage")),
     createdAt: v.number(),
   }).index("userId", ["userId"]),
+  drills: defineTable({
+    coachId: v.id("users"),
+    title: v.string(),
+    description: v.string(),
+    videoStorageId: v.optional(v.id("_storage")),
+  }).index("coachId", ["coachId"]),
+  coachReadStatus: defineTable({
+    coachId: v.id("users"),
+    studentId: v.id("users"),
+    lastReadAt: v.number(),
+  }).index("coachId_studentId", ["coachId", "studentId"]),
 });
 
 export default schema;

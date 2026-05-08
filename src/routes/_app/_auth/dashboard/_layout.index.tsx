@@ -1,10 +1,19 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { createFileRoute } from "@tanstack/react-router";
-import { Plus, TrendingDown, Video, MessageSquare, Trophy } from "lucide-react";
+import { Plus, TrendingDown, Video, MessageSquare, Trophy, LineChart as ChartIcon } from "lucide-react";
 import siteConfig from "~/site.config";
 import { useQuery } from "@tanstack/react-query";
 import { convexQuery, useConvexMutation } from "@convex-dev/react-query";
 import { api } from "@cvx/_generated/api";
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+} from "recharts";
 import {
   Card,
   CardContent,
@@ -102,6 +111,64 @@ export default function Dashboard() {
           </CardContent>
         </Card>
 
+        {/* Handicap Chart */}
+        <Card className="lg:col-span-2 border-primary/20 bg-card/50 backdrop-blur-sm">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <ChartIcon className="w-5 h-5 text-primary" />
+              Handicap Progress
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="h-[200px] w-full">
+              {handicaps && (handicaps as Handicap[]).length > 0 ? (
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart
+                    data={(handicaps as Handicap[]).map((h) => ({
+                      date: new Date(h.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric' }),
+                      value: h.value,
+                    }))}
+                  >
+                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="hsl(var(--primary)/0.1)" />
+                    <XAxis 
+                      dataKey="date" 
+                      axisLine={false} 
+                      tickLine={false} 
+                      tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }} 
+                    />
+                    <YAxis 
+                      axisLine={false} 
+                      tickLine={false} 
+                      tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }}
+                      domain={['dataMin - 1', 'dataMax + 1']}
+                    />
+                    <Tooltip 
+                      contentStyle={{ 
+                        backgroundColor: 'hsl(var(--card))', 
+                        borderColor: 'hsl(var(--primary)/0.2)',
+                        borderRadius: '12px'
+                      }}
+                      itemStyle={{ color: 'hsl(var(--primary))' }}
+                    />
+                    <Line
+                      type="monotone"
+                      dataKey="value"
+                      stroke="hsl(var(--primary))"
+                      strokeWidth={3}
+                      dot={{ fill: 'hsl(var(--primary))', strokeWidth: 2, r: 4 }}
+                      activeDot={{ r: 6, strokeWidth: 0 }}
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
+              ) : (
+                <div className="flex h-full items-center justify-center text-muted-foreground text-sm">
+                  Add some handicap entries to see your progress chart.
+                </div>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+
         {/* Handicap Tracker */}
         <Card className="border-primary/20 bg-card/50 backdrop-blur-sm">
           <CardHeader>
@@ -159,6 +226,16 @@ export default function Dashboard() {
               <Link to="/dashboard/library">
                 <Video className="w-4 h-4 text-primary" />
                 Continue Learning
+              </Link>
+            </Button>
+            <Button
+              asChild
+              variant="outline"
+              className="w-full justify-start gap-3 border-primary/10 hover:bg-primary/5 hover:text-primary"
+            >
+              <Link to="/dashboard/reviews">
+                <Trophy className="w-4 h-4 text-primary" />
+                Analysis History
               </Link>
             </Button>
             <Button

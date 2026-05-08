@@ -22,9 +22,11 @@ import { Route as AppAuthCoachStudentIdRouteImport } from './routes/_app/_auth/c
 import { Route as AppAuthDashboardLayoutIndexRouteImport } from './routes/_app/_auth/dashboard/_layout.index'
 import { Route as AppAuthOnboardingLayoutUsernameRouteImport } from './routes/_app/_auth/onboarding/_layout.username'
 import { Route as AppAuthDashboardLayoutSettingsRouteImport } from './routes/_app/_auth/dashboard/_layout.settings'
+import { Route as AppAuthDashboardLayoutReviewsRouteImport } from './routes/_app/_auth/dashboard/_layout.reviews'
 import { Route as AppAuthDashboardLayoutLibraryRouteImport } from './routes/_app/_auth/dashboard/_layout.library'
 import { Route as AppAuthDashboardLayoutCheckoutRouteImport } from './routes/_app/_auth/dashboard/_layout.checkout'
 import { Route as AppAuthDashboardLayoutChatRouteImport } from './routes/_app/_auth/dashboard/_layout.chat'
+import { Route as AppAuthDashboardLayoutCaddyRouteImport } from './routes/_app/_auth/dashboard/_layout.caddy'
 import { Route as AppAuthDashboardLayoutSettingsIndexRouteImport } from './routes/_app/_auth/dashboard/_layout.settings.index'
 import { Route as AppAuthDashboardLayoutSettingsBillingRouteImport } from './routes/_app/_auth/dashboard/_layout.settings.billing'
 import { Route as AppAuthDashboardLayoutLibraryCourseIdRouteImport } from './routes/_app/_auth/dashboard/_layout.library.$courseId'
@@ -95,6 +97,12 @@ const AppAuthDashboardLayoutSettingsRoute =
     path: '/settings',
     getParentRoute: () => AppAuthDashboardLayoutRoute,
   } as any)
+const AppAuthDashboardLayoutReviewsRoute =
+  AppAuthDashboardLayoutReviewsRouteImport.update({
+    id: '/reviews',
+    path: '/reviews',
+    getParentRoute: () => AppAuthDashboardLayoutRoute,
+  } as any)
 const AppAuthDashboardLayoutLibraryRoute =
   AppAuthDashboardLayoutLibraryRouteImport.update({
     id: '/library',
@@ -111,6 +119,12 @@ const AppAuthDashboardLayoutChatRoute =
   AppAuthDashboardLayoutChatRouteImport.update({
     id: '/chat',
     path: '/chat',
+    getParentRoute: () => AppAuthDashboardLayoutRoute,
+  } as any)
+const AppAuthDashboardLayoutCaddyRoute =
+  AppAuthDashboardLayoutCaddyRouteImport.update({
+    id: '/caddy',
+    path: '/caddy',
     getParentRoute: () => AppAuthDashboardLayoutRoute,
   } as any)
 const AppAuthDashboardLayoutSettingsIndexRoute =
@@ -141,9 +155,11 @@ export interface FileRoutesByFullPath {
   '/onboarding': typeof AppAuthOnboardingLayoutRouteWithChildren
   '/coach/': typeof AppAuthCoachIndexRoute
   '/login/': typeof AppLoginLayoutIndexRoute
+  '/dashboard/caddy': typeof AppAuthDashboardLayoutCaddyRoute
   '/dashboard/chat': typeof AppAuthDashboardLayoutChatRoute
   '/dashboard/checkout': typeof AppAuthDashboardLayoutCheckoutRoute
   '/dashboard/library': typeof AppAuthDashboardLayoutLibraryRouteWithChildren
+  '/dashboard/reviews': typeof AppAuthDashboardLayoutReviewsRoute
   '/dashboard/settings': typeof AppAuthDashboardLayoutSettingsRouteWithChildren
   '/onboarding/username': typeof AppAuthOnboardingLayoutUsernameRoute
   '/dashboard/': typeof AppAuthDashboardLayoutIndexRoute
@@ -157,9 +173,11 @@ export interface FileRoutesByTo {
   '/onboarding': typeof AppAuthOnboardingLayoutRouteWithChildren
   '/coach': typeof AppAuthCoachIndexRoute
   '/login': typeof AppLoginLayoutIndexRoute
+  '/dashboard/caddy': typeof AppAuthDashboardLayoutCaddyRoute
   '/dashboard/chat': typeof AppAuthDashboardLayoutChatRoute
   '/dashboard/checkout': typeof AppAuthDashboardLayoutCheckoutRoute
   '/dashboard/library': typeof AppAuthDashboardLayoutLibraryRouteWithChildren
+  '/dashboard/reviews': typeof AppAuthDashboardLayoutReviewsRoute
   '/onboarding/username': typeof AppAuthOnboardingLayoutUsernameRoute
   '/dashboard': typeof AppAuthDashboardLayoutIndexRoute
   '/dashboard/library/$courseId': typeof AppAuthDashboardLayoutLibraryCourseIdRoute
@@ -178,9 +196,11 @@ export interface FileRoutesById {
   '/_app/_auth/onboarding/_layout': typeof AppAuthOnboardingLayoutRouteWithChildren
   '/_app/_auth/coach/': typeof AppAuthCoachIndexRoute
   '/_app/login/_layout/': typeof AppLoginLayoutIndexRoute
+  '/_app/_auth/dashboard/_layout/caddy': typeof AppAuthDashboardLayoutCaddyRoute
   '/_app/_auth/dashboard/_layout/chat': typeof AppAuthDashboardLayoutChatRoute
   '/_app/_auth/dashboard/_layout/checkout': typeof AppAuthDashboardLayoutCheckoutRoute
   '/_app/_auth/dashboard/_layout/library': typeof AppAuthDashboardLayoutLibraryRouteWithChildren
+  '/_app/_auth/dashboard/_layout/reviews': typeof AppAuthDashboardLayoutReviewsRoute
   '/_app/_auth/dashboard/_layout/settings': typeof AppAuthDashboardLayoutSettingsRouteWithChildren
   '/_app/_auth/onboarding/_layout/username': typeof AppAuthOnboardingLayoutUsernameRoute
   '/_app/_auth/dashboard/_layout/': typeof AppAuthDashboardLayoutIndexRoute
@@ -199,9 +219,11 @@ export interface FileRouteTypes {
     | '/onboarding'
     | '/coach/'
     | '/login/'
+    | '/dashboard/caddy'
     | '/dashboard/chat'
     | '/dashboard/checkout'
     | '/dashboard/library'
+    | '/dashboard/reviews'
     | '/dashboard/settings'
     | '/onboarding/username'
     | '/dashboard/'
@@ -215,9 +237,11 @@ export interface FileRouteTypes {
     | '/onboarding'
     | '/coach'
     | '/login'
+    | '/dashboard/caddy'
     | '/dashboard/chat'
     | '/dashboard/checkout'
     | '/dashboard/library'
+    | '/dashboard/reviews'
     | '/onboarding/username'
     | '/dashboard'
     | '/dashboard/library/$courseId'
@@ -235,9 +259,11 @@ export interface FileRouteTypes {
     | '/_app/_auth/onboarding/_layout'
     | '/_app/_auth/coach/'
     | '/_app/login/_layout/'
+    | '/_app/_auth/dashboard/_layout/caddy'
     | '/_app/_auth/dashboard/_layout/chat'
     | '/_app/_auth/dashboard/_layout/checkout'
     | '/_app/_auth/dashboard/_layout/library'
+    | '/_app/_auth/dashboard/_layout/reviews'
     | '/_app/_auth/dashboard/_layout/settings'
     | '/_app/_auth/onboarding/_layout/username'
     | '/_app/_auth/dashboard/_layout/'
@@ -344,6 +370,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppAuthDashboardLayoutSettingsRouteImport
       parentRoute: typeof AppAuthDashboardLayoutRoute
     }
+    '/_app/_auth/dashboard/_layout/reviews': {
+      id: '/_app/_auth/dashboard/_layout/reviews'
+      path: '/reviews'
+      fullPath: '/dashboard/reviews'
+      preLoaderRoute: typeof AppAuthDashboardLayoutReviewsRouteImport
+      parentRoute: typeof AppAuthDashboardLayoutRoute
+    }
     '/_app/_auth/dashboard/_layout/library': {
       id: '/_app/_auth/dashboard/_layout/library'
       path: '/library'
@@ -363,6 +396,13 @@ declare module '@tanstack/react-router' {
       path: '/chat'
       fullPath: '/dashboard/chat'
       preLoaderRoute: typeof AppAuthDashboardLayoutChatRouteImport
+      parentRoute: typeof AppAuthDashboardLayoutRoute
+    }
+    '/_app/_auth/dashboard/_layout/caddy': {
+      id: '/_app/_auth/dashboard/_layout/caddy'
+      path: '/caddy'
+      fullPath: '/dashboard/caddy'
+      preLoaderRoute: typeof AppAuthDashboardLayoutCaddyRouteImport
       parentRoute: typeof AppAuthDashboardLayoutRoute
     }
     '/_app/_auth/dashboard/_layout/settings/': {
@@ -437,19 +477,23 @@ const AppAuthDashboardLayoutSettingsRouteWithChildren =
   )
 
 interface AppAuthDashboardLayoutRouteChildren {
+  AppAuthDashboardLayoutCaddyRoute: typeof AppAuthDashboardLayoutCaddyRoute
   AppAuthDashboardLayoutChatRoute: typeof AppAuthDashboardLayoutChatRoute
   AppAuthDashboardLayoutCheckoutRoute: typeof AppAuthDashboardLayoutCheckoutRoute
   AppAuthDashboardLayoutLibraryRoute: typeof AppAuthDashboardLayoutLibraryRouteWithChildren
+  AppAuthDashboardLayoutReviewsRoute: typeof AppAuthDashboardLayoutReviewsRoute
   AppAuthDashboardLayoutSettingsRoute: typeof AppAuthDashboardLayoutSettingsRouteWithChildren
   AppAuthDashboardLayoutIndexRoute: typeof AppAuthDashboardLayoutIndexRoute
 }
 
 const AppAuthDashboardLayoutRouteChildren: AppAuthDashboardLayoutRouteChildren =
   {
+    AppAuthDashboardLayoutCaddyRoute: AppAuthDashboardLayoutCaddyRoute,
     AppAuthDashboardLayoutChatRoute: AppAuthDashboardLayoutChatRoute,
     AppAuthDashboardLayoutCheckoutRoute: AppAuthDashboardLayoutCheckoutRoute,
     AppAuthDashboardLayoutLibraryRoute:
       AppAuthDashboardLayoutLibraryRouteWithChildren,
+    AppAuthDashboardLayoutReviewsRoute: AppAuthDashboardLayoutReviewsRoute,
     AppAuthDashboardLayoutSettingsRoute:
       AppAuthDashboardLayoutSettingsRouteWithChildren,
     AppAuthDashboardLayoutIndexRoute: AppAuthDashboardLayoutIndexRoute,

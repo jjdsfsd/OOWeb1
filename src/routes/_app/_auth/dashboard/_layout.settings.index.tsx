@@ -1,13 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Upload } from "lucide-react";
-import { useUploadFiles } from "@xixixao/uploadstuff/react";
-import { useDoubleCheck } from "@/ui/use-double-check";
+import { Upload, Loader2 } from "lucide-react";
 import { Input } from "@/ui/input";
 import { Button } from "@/ui/button";
 import { convexQuery, useConvexMutation } from "@convex-dev/react-query";
 import { api } from "~/convex/_generated/api";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { useForm } from "@tanstack/react-form";
 import * as validators from "@/utils/validators";
 import { useSignOut } from "@/utils/misc";
@@ -41,17 +39,29 @@ export default function DashboardSettings() {
   const toggleCoachRole = useConvexMutation(api.app.toggleCoachRole);
   const generateUploadUrl = useConvexMutation(api.app.generateUploadUrl);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const { startUpload } = useUploadFiles(generateUploadUrl, {
-    onUploadComplete: async (uploaded) => {
+  const [isUploading, setIsUploading] = useState(false);
+
+  const handleUpload = async (files: File[]) => {
+    if (files.length === 0) return;
+    setIsUploading(true);
+    try {
+      const uploadUrl = await generateUploadUrl({});
+      const result = await fetch(uploadUrl, {
+        method: "POST",
+        headers: { "Content-Type": files[0].type },
+        body: files[0],
+      });
+      const { storageId } = await result.json();
+      await updateUserImage({ imageId: storageId });
       if (fileInputRef.current) {
         fileInputRef.current.value = "";
       }
-      await updateUserImage({
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        imageId: (uploaded[0].response as any).storageId,
-      });
-    },
-  });
+    } catch (err) {
+      console.error("Upload failed", err);
+    } finally {
+      setIsUploading(false);
+    }
+  };
 
   const usernameForm = useForm({
     defaultValues: {
@@ -91,7 +101,11 @@ export default function DashboardSettings() {
               <div className="h-20 w-20 rounded-full bg-gradient-to-br from-lime-400 from-10% via-cyan-300 to-blue-500" />
             )}
             <div className="absolute z-10 hidden h-full w-full items-center justify-center bg-primary/40 group-hover:flex">
-              <Upload className="h-6 w-6 text-secondary" />
+              {isUploading ? (
+                <Loader2 className="h-6 w-6 animate-spin text-secondary" />
+              ) : (
+                <Upload className="h-6 w-6 text-secondary" />
+              )}
             </div>
           </label>
           <input
@@ -101,16 +115,14 @@ export default function DashboardSettings() {
             accept="image/*"
             className="peer sr-only"
             required
+            disabled={isUploading}
             tabIndex={user ? -1 : 0}
             onChange={async (event) => {
               if (!event.target.files) {
                 return;
               }
               const files = Array.from(event.target.files);
-              if (files.length === 0) {
-                return;
-              }
-              startUpload(files);
+              handleUpload(files);
             }}
           />
         </div>

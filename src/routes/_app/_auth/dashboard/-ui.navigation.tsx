@@ -5,6 +5,7 @@ import {
   Check,
   Settings,
   LogOut,
+  Bot,
 } from "lucide-react";
 import { cn, useSignOut } from "@/utils/misc";
 import { ThemeSwitcher } from "@/ui/theme-switcher";
@@ -23,6 +24,9 @@ import { Logo } from "@/ui/logo";
 import { Link, useNavigate, useRouter } from "@tanstack/react-router";
 import type { User } from "@cvx/types";
 import { PLANS } from "@cvx/schema";
+import { useQuery } from "@tanstack/react-query";
+import { convexQuery } from "@convex-dev/react-query";
+import { api } from "@cvx/_generated/api";
 
 export function Navigation({ user }: { user: User }) {
   const signOut = useSignOut();
@@ -30,10 +34,20 @@ export function Navigation({ user }: { user: User }) {
   const router = useRouter();
   const currentPath = router.state.location.pathname;
 
+  const { data: unreadCount } = useQuery(convexQuery(api.swingReviews.getUnreadCount, {}));
+
+  const { data: students } = useQuery({
+    ...convexQuery(api.messages.listStudents, {}),
+    enabled: !!user.isCoach,
+  });
+  const totalUnreadStudents = students?.reduce((acc: number, s: any) => acc + s.unreadCount, 0) || 0;
+
   const isDashboardPath =
     currentPath === "/dashboard" || currentPath === "/dashboard/";
   const isLibraryPath = currentPath.startsWith("/dashboard/library");
   const isChatPath = currentPath.startsWith("/dashboard/chat");
+  const isCaddyPath = currentPath.startsWith("/dashboard/caddy");
+  const isReviewsPath = currentPath.startsWith("/dashboard/reviews");
   const isSettingsPath =
     currentPath.startsWith("/dashboard/settings") &&
     !currentPath.includes("billing");
@@ -267,6 +281,42 @@ export function Navigation({ user }: { user: User }) {
         <div
           className={cn(
             `flex h-12 items-center border-b-2`,
+            isCaddyPath ? "border-primary" : "border-transparent",
+          )}
+        >
+          <Link
+            to="/dashboard/caddy"
+            className={cn(
+              `${buttonVariants({ variant: "ghost", size: "sm" })} text-primary/80 flex gap-2 items-center`,
+            )}
+          >
+            <Bot className="w-4 h-4 text-orange-500" />
+            AI Caddy
+          </Link>
+        </div>
+        <div
+          className={cn(
+            `flex h-12 items-center border-b-2`,
+            isReviewsPath ? "border-primary" : "border-transparent",
+          )}
+        >
+          <Link
+            to="/dashboard/reviews"
+            className={cn(
+              `${buttonVariants({ variant: "ghost", size: "sm" })} text-primary/80 relative`,
+            )}
+          >
+            Reviews
+            {unreadCount && unreadCount > 0 ? (
+              <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white shadow-sm ring-2 ring-card">
+                {unreadCount}
+              </span>
+            ) : null}
+          </Link>
+        </div>
+        <div
+          className={cn(
+            `flex h-12 items-center border-b-2`,
             isSettingsPath ? "border-primary" : "border-transparent",
           )}
         >
@@ -304,11 +354,16 @@ export function Navigation({ user }: { user: User }) {
             <Link
               to="/coach"
               className={cn(
-                `${buttonVariants({ variant: "ghost", size: "sm" })} text-primary/80 font-bold text-orange-500`,
+                `${buttonVariants({ variant: "ghost", size: "sm" })} text-primary/80 font-bold text-orange-500 relative`,
               )}
-            >
+              >
               Coach Dashboard
-            </Link>
+              {totalUnreadStudents > 0 && (
+                <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white shadow-sm ring-2 ring-card">
+                  {totalUnreadStudents}
+                </span>
+              )}
+              </Link>
           </div>
         )}
       </div>

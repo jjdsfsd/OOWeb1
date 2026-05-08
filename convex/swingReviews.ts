@@ -65,3 +65,35 @@ export const list = query({
       .collect();
   },
 });
+
+export const getUnreadCount = query({
+  args: {},
+  returns: v.number(),
+  handler: async (ctx) => {
+    const userId = await auth.getUserId(ctx);
+    if (!userId) return 0;
+    
+    const user = await ctx.db.get(userId);
+    if (!user) return 0;
+
+    const lastRead = user.lastReadReviewsAt ?? 0;
+    const reviews = await ctx.db
+      .query("swingReviews")
+      .withIndex("userId", (q) => q.eq("userId", userId))
+      .collect();
+    
+    return reviews.filter(r => r.createdAt > lastRead).length;
+  },
+});
+
+export const markRead = mutation({
+  args: {},
+  returns: v.null(),
+  handler: async (ctx) => {
+    const userId = await auth.getUserId(ctx);
+    if (!userId) return null;
+    
+    await ctx.db.patch(userId, { lastReadReviewsAt: Date.now() });
+    return null;
+  },
+});
